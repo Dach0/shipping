@@ -83,7 +83,14 @@
                 <div class="title m-b-md">
                     Laravel
                 </div>
-
+                
+                    </div>
+                    <div id="app">
+            
+                        <example-component></example-component>
+                    
+                    </div>
+                    
                 <div class="links">
                     <a href="https://laravel.com/docs">Docs</a>
                     <a href="https://laracasts.com">Laracasts</a>
@@ -94,6 +101,5 @@
                     <a href="https://github.com/laravel/laravel">GitHub</a>
                 </div>
             </div>
-        </div>
     </body>
 </html>
