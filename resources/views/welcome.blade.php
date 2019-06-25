@@ -84,12 +84,8 @@
                     Laravel
                 </div>
                 
-                    </div>
-                    <div id="app">
-            
-                        <example-component></example-component>
-                    
-                    </div>
+                    </div>        
+                        <example-component></example-component>                  
                     
                 <div class="links">
                     <a href="https://laravel.com/docs">Docs</a>
