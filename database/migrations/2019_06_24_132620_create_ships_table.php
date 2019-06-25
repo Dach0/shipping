@@ -15,6 +15,7 @@ class CreateShipsTable extends Migration
     {
         Schema::create('ships', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('boat_name');
             $table->timestamps();
         });
     }
