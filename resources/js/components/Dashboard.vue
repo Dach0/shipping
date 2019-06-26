@@ -63,7 +63,7 @@
                 </div>
 
         <div class="form-group">
-            <input v-model="form.first_name" type="text" name="distance" placeholder="Udaljenost"
+            <input v-model="form.distance" type="text" name="distance" placeholder="Udaljenost"
                 class="form-control" :class="{ 'is-invalid': form.errors.has('distance') }">
             <has-error :form="form" field="distance"></has-error>
         </div>
@@ -124,7 +124,12 @@
             updateDestination(){
 
             },
-            creeateDestination(){
+            createDestination(){
+                this.form.post('api/destination')
+                .then(() => { console.log('Uspjesno upisan u bazu') })
+                .catch(() => {
+
+                })
 
             },
             newModal(){

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Destination;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreDestinationRequest;
 
 class DestinationController extends Controller
 {
@@ -33,9 +34,11 @@ class DestinationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreDestinationRequest $request)
     {
-        //
+        $destination = Destination::create($request->all());
+
+        return ['message' => 'Destinacija kreirana', 'data' => response()->json($destination)];
     }
 
     /**

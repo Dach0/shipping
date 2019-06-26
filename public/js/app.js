@@ -1984,7 +1984,11 @@ __webpack_require__.r(__webpack_exports__);
     editDestination: function editDestination() {},
     deleteDestination: function deleteDestination() {},
     updateDestination: function updateDestination() {},
-    creeateDestination: function creeateDestination() {},
+    createDestination: function createDestination() {
+      this.form.post('api/destination').then(function () {
+        console.log('Uspjesno upisan u bazu');
+      })["catch"](function () {});
+    },
     newModal: function newModal() {
       this.editmode = false;
       this.form.reset();
@@ -67258,8 +67262,8 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.form.first_name,
-                              expression: "form.first_name"
+                              value: _vm.form.distance,
+                              expression: "form.distance"
                             }
                           ],
                           staticClass: "form-control",
@@ -67271,7 +67275,7 @@ var render = function() {
                             name: "distance",
                             placeholder: "Udaljenost"
                           },
-                          domProps: { value: _vm.form.first_name },
+                          domProps: { value: _vm.form.distance },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
@@ -67279,7 +67283,7 @@ var render = function() {
                               }
                               _vm.$set(
                                 _vm.form,
-                                "first_name",
+                                "distance",
                                 $event.target.value
                               )
                             }
