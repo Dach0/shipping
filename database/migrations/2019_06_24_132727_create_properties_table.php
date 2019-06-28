@@ -15,6 +15,9 @@ class CreatePropertiesTable extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('consumption');
+            $table->integer('crew_number');
+            $table->integer('max_speed');
             $table->timestamps();
         });
     }

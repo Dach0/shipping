@@ -21,7 +21,14 @@ Vue.component(AlertError.name, AlertError)
 
 
 /**
- * importing vue-bootstrap
+ * importing sweetalert2
+ */
+
+import Swal from 'sweetalert2';
+window.Swal = Swal;
+
+ /**
+* importing vue-bootstrap
  */
 
  import BootstrapVue from 'bootstrap-vue'
@@ -47,6 +54,12 @@ Vue.component(AlertError.name, AlertError)
   const router = new VueRouter({
     routes // short for `routes: routes`
   })
+
+  /**
+   * some custom event
+   */
+
+window.Event = new Vue();
 
 /**
  * The following block of code may be used to automatically register your

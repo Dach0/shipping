@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateShipHasProperties extends Migration
+class CreatePropertyShipTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateShipHasProperties extends Migration
      */
     public function up()
     {
-        Schema::create('ship_has_properties', function (Blueprint $table) {
+        Schema::create('property_ship', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->bigInteger('ship_id')->unsigned();
-            $table->bigInteger('properties_id')->unsigned();
+            $table->bigInteger('property_id')->unsigned();
 
             $table->foreign('ship_id')->references('id')->on('ships');
-            $table->foreign('properties_id')->references('id')->on('properties');
+            $table->foreign('property_id')->references('id')->on('properties');
         });
     }
 
@@ -29,6 +30,6 @@ class CreateShipHasProperties extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ship_has_properties');
+        Schema::dropIfExists('property_ship');
     }
 }

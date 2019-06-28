@@ -25,6 +25,15 @@ class CreateUsersTable extends Migration
 
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
         });
+
+        DB::table('users')->insert(
+            array(
+                'name' => 'damjan',
+                'email' => 'damjan@gmail.com',
+                'password' => app('hash')->make('krivacevic'),
+                'role_id' => '1',
+            )
+        );
     }
 
     /**

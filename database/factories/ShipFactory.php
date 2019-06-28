@@ -7,6 +7,6 @@ use Faker\Generator as Faker;
 
 $factory->define(Ship::class, function (Faker $faker) {
     return [
-        //
+        'boat_name' => $faker->randomElement($array = array ('Vardar', 'Kapetan kuka', 'Barakuda', 'Sezonac', 'Jegulja'), $count = 1, $allowDuplicates = false), 
     ];
 });
