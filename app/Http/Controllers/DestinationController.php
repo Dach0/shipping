@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Destination;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreDestinationRequest;
+use App\Http\Requests\UpdateDestinationRequest;
 
 class DestinationController extends Controller
 {
@@ -70,9 +71,11 @@ class DestinationController extends Controller
      * @param  \App\Destination  $destination
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Destination $destination)
+    public function update(UpdateDestinationRequest $request, $id)
     {
-        //
+        Destination::findOrFail($id)->update($request->all());
+
+        return['message' => 'Izmijenjeni podaci o destinaciji'];
     }
 
     /**
@@ -81,8 +84,10 @@ class DestinationController extends Controller
      * @param  \App\Destination  $destination
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Destination $destination)
+    public function destroy($id)
     {
-        //
+       Destination::findOrFail($id)->delete();
+
+        return['message' => 'Obrisan podatak o destinaciji'];
     }
 }

@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "bootstrap-vue": "^2.0.0-rc.24",
+        "sweetalert2": "^8.13.0",
         "vform": "^1.0.1",
         "vue-router": "^3.0.6"
     }

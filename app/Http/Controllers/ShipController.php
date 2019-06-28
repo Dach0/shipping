@@ -14,7 +14,7 @@ class ShipController extends Controller
      */
     public function index()
     {
-        //
+        return Ship::with('properties')->get();
     }
 
     /**
