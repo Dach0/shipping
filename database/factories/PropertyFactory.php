@@ -7,8 +7,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Property::class, function (Faker $faker) {
     return [
-        'consumption' => $faker->numberBetween($min = 15, $max = 50), 
-        'crew_number' => $faker->numberBetween($min = 15, $max = 50),
-        'max_speed' => $faker->numberBetween($min = 15, $max = 50)
+        'property_name' => $faker->randomElement($array = array ('consumption', 'crew_number', 'max_speed')),
+        'property_amount' => $faker->numberBetween($min = 15, $max = 50), 
    ];
 });
