@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Ship;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreShipRequest;
 
 class ShipController extends Controller
 {
@@ -33,9 +34,14 @@ class ShipController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreShipRequest $request)
     {
-        //
+
+        $ship = Ship::create([ 'boat_name' => $request->boat_name]);
+
+        $ship->properties()->attach($request->property_id);
+
+        return ['message' => 'Kreiran brod'];
     }
 
     /**
@@ -78,8 +84,12 @@ class ShipController extends Controller
      * @param  \App\Ship  $ship
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Ship $ship)
+    public function destroy($id)
     {
-        //
+        $ship = Ship::findOrFail($id);
+       
+        $ship->properties()->detach($ship->pivot->property_id);
+        $ship->delete();
+        return ['msg' => 'Obrisan brod'];
     }
 }

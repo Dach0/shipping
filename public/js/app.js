@@ -2022,17 +2022,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       editmode: false,
+      editShipmode: false,
       ships: [],
       destinations: [],
       form: new Form({
         id: '',
         destination_name: '',
         distance: ''
+      }),
+      shipForm: new Form({
+        id: '',
+        boat_name: '',
+        property_id: ''
       })
     };
   },
@@ -2080,6 +2085,28 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
+    deleteShip: function deleteShip(id) {
+      var _this4 = this;
+
+      Swal.fire({
+        title: 'Jeste li sigurni?',
+        text: "Nećete moći da opozovete akciju!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Da, obriši!'
+      }).then(function (result) {
+        if (result.value) {
+          _this4.shipForm["delete"]('api/ship/' + id).then(function () {
+            Swal.fire('Obrisano!', 'Brod je obrisan', 'success');
+            Event.$emit('dbShipChanged');
+          })["catch"](function () {
+            Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+          });
+        }
+      });
+    },
     updateDestination: function updateDestination() {
       this.form.put("api/destination/" + this.form.id).then(function () {
         Event.$emit('dbChanged');
@@ -2110,20 +2137,42 @@ __webpack_require__.r(__webpack_exports__);
         Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
       });
     },
+    createShip: function createShip() {
+      this.shipForm.post('api/ship').then(function () {
+        Event.$emit('dbShipChanged');
+        $('#addShipModal').modal('hide');
+        Swal.fire({
+          position: 'center',
+          type: 'success',
+          title: 'Brod sačuvan u bazi podataka',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })["catch"](function () {
+        Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+      });
+    },
     newModal: function newModal() {
       this.editmode = false;
-      this.formShip.reset();
+      this.form.reset();
       $('#addDestinationModal').modal('show');
     },
-    newShipModal: function newShipModal() {}
+    newShipModal: function newShipModal() {
+      this.editShipmode = false;
+      this.shipForm.reset();
+      $('#addShipModal').modal('show');
+    }
   },
   mounted: function mounted() {
-    var _this4 = this;
+    var _this5 = this;
 
     this.loadDestinatios();
     this.loadShips();
     Event.$on('dbChanged', function () {
-      _this4.loadDestinatios();
+      _this5.loadDestinatios();
+    });
+    Event.$on('dbShipChanged', function () {
+      _this5.loadShips();
     });
   }
 });
@@ -69987,68 +70036,78 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row justify-content-center" }, [
-      _c("div", { staticClass: "col-12" }, [
-        _c("div", { staticClass: "col-2" }, [
-          _c("div", { staticClass: "d-flex justify-content-between" }, [
-            _c("h4", [_vm._v("Spisak brodova")]),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-sm btn-primary mb-2",
-                on: { click: _vm.newShipModal }
-              },
-              [_vm._v("Dodaj brod")]
-            )
-          ]),
+      _c("div", { staticClass: "col-12 mt-2 mb-3" }, [
+        _c("div", { staticClass: "d-flex justify-content-between" }, [
+          _c("h4", [_vm._v("Spisak brodova")]),
           _vm._v(" "),
-          _c("table", { staticClass: "table table-striped" }, [
-            _vm._m(0),
-            _vm._v(" "),
-            _c(
-              "tbody",
-              _vm._l(_vm.ships, function(ship) {
-                return _c("tr", { key: ship.id }, [
-                  _c("td", [_vm._v(_vm._s(ship.boat_name))]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-sm btn-success",
-                        on: {
-                          click: function($event) {
-                            return _vm.editShipModal(ship)
-                          }
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm btn-primary mb-2",
+              on: { click: _vm.newShipModal }
+            },
+            [_vm._v("Dodaj brod")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("table", { staticClass: "table table-striped" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c(
+            "tbody",
+            _vm._l(_vm.ships, function(ship) {
+              return _c("tr", { key: ship.id }, [
+                _c("td", [_vm._v(_vm._s(ship.boat_name))]),
+                _vm._v(" "),
+                _c("td", [
+                  _vm._v(_vm._s(ship.properties[1].property_amount) + " l/km")
+                ]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(ship.properties[2].property_amount))]),
+                _vm._v(" "),
+                _c("td", [
+                  _vm._v(
+                    _vm._s(ship.properties[0].property_amount) + " čvorova"
+                  )
+                ]),
+                _vm._v(" "),
+                _c("td", [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-sm btn-success",
+                      on: {
+                        click: function($event) {
+                          return _vm.editShipModal(ship)
                         }
-                      },
-                      [_vm._v("Izmijeni")]
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-sm btn-danger",
-                        on: {
-                          click: function($event) {
-                            return _vm.deleteShip(ship.id)
-                          }
+                      }
+                    },
+                    [_vm._v("Izmijeni")]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("td", [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-sm btn-danger",
+                      on: {
+                        click: function($event) {
+                          return _vm.deleteShip(ship.id)
                         }
-                      },
-                      [_vm._v("Obriši")]
-                    )
-                  ])
+                      }
+                    },
+                    [_vm._v("Obriši")]
+                  )
                 ])
-              }),
-              0
-            )
-          ])
+              ])
+            }),
+            0
+          )
         ])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-12" }, [
+      _c("div", { staticClass: "col-12 mt-3" }, [
         _c("div", { staticClass: "d-flex justify-content-between" }, [
           _c("h4", [_vm._v("Spisak destinacija")]),
           _vm._v(" "),
@@ -70359,8 +70418,8 @@ var render = function() {
                       {
                         name: "show",
                         rawName: "v-show",
-                        value: _vm.editmode,
-                        expression: "editmode"
+                        value: _vm.editShipmode,
+                        expression: "editShipmode"
                       }
                     ],
                     staticClass: "modal-title"
@@ -70375,8 +70434,8 @@ var render = function() {
                       {
                         name: "show",
                         rawName: "v-show",
-                        value: !_vm.editmode,
-                        expression: "!editmode"
+                        value: !_vm.editShipmode,
+                        expression: "!editShipmode"
                       }
                     ],
                     staticClass: "modal-title"
@@ -70393,7 +70452,7 @@ var render = function() {
                   on: {
                     submit: function($event) {
                       $event.preventDefault()
-                      _vm.editmode ? _vm.updateShip() : _vm.createShip()
+                      _vm.editShipmode ? _vm.updateShip() : _vm.createShip()
                     }
                   }
                 },
@@ -70408,27 +70467,27 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.form.boat_name,
-                              expression: "form.boat_name"
+                              value: _vm.shipForm.boat_name,
+                              expression: "shipForm.boat_name"
                             }
                           ],
                           staticClass: "form-control",
                           class: {
-                            "is-invalid": _vm.form.errors.has("boat_name")
+                            "is-invalid": _vm.shipForm.errors.has("boat_name")
                           },
                           attrs: {
                             type: "text",
                             name: "boat_name",
                             placeholder: "Naziv broda"
                           },
-                          domProps: { value: _vm.form.boat_name },
+                          domProps: { value: _vm.shipForm.boat_name },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
                               _vm.$set(
-                                _vm.form,
+                                _vm.shipForm,
                                 "boat_name",
                                 $event.target.value
                               )
@@ -70437,7 +70496,7 @@ var render = function() {
                         }),
                         _vm._v(" "),
                         _c("has-error", {
-                          attrs: { form: _vm.form, field: "boat_name" }
+                          attrs: { form: _vm.shipForm, field: "boat_name" }
                         })
                       ],
                       1
@@ -70447,41 +70506,65 @@ var render = function() {
                       "div",
                       { staticClass: "form-group" },
                       [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.form.distance,
-                              expression: "form.distance"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          class: {
-                            "is-invalid": _vm.form.errors.has("distance")
-                          },
-                          attrs: {
-                            type: "text",
-                            name: "distance",
-                            placeholder: "Udaljenost"
-                          },
-                          domProps: { value: _vm.form.distance },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.shipForm.property_id,
+                                expression: "shipForm.property_id"
                               }
-                              _vm.$set(
-                                _vm.form,
-                                "distance",
-                                $event.target.value
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.shipForm.errors.has(
+                                "property_id"
                               )
+                            },
+                            attrs: { type: "text", name: "property_id" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.shipForm,
+                                  "property_id",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
                             }
-                          }
-                        }),
+                          },
+                          [
+                            _c("option", { attrs: { value: "" } }, [
+                              _vm._v("Izaberi svojstva")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "1" } }, [
+                              _vm._v("1")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "2" } }, [
+                              _vm._v("2")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "3" } }, [
+                              _vm._v("3")
+                            ])
+                          ]
+                        ),
                         _vm._v(" "),
                         _c("has-error", {
-                          attrs: { form: _vm.form, field: "distance" }
+                          attrs: { form: _vm.shipForm, field: "property_id" }
                         })
                       ],
                       1
@@ -70505,8 +70588,8 @@ var render = function() {
                           {
                             name: "show",
                             rawName: "v-show",
-                            value: _vm.editmode,
-                            expression: "editmode"
+                            value: _vm.editShipmode,
+                            expression: "editShipmode"
                           }
                         ],
                         staticClass: "btn btn-success",
@@ -70522,8 +70605,8 @@ var render = function() {
                           {
                             name: "show",
                             rawName: "v-show",
-                            value: !_vm.editmode,
-                            expression: "!editmode"
+                            value: !_vm.editShipmode,
+                            expression: "!editShipmode"
                           }
                         ],
                         staticClass: "btn btn-primary",
@@ -70547,7 +70630,19 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("thead", [
-      _c("tr", [_c("th", { attrs: { scope: "col" } }, [_vm._v("Ime broda")])])
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Ime broda")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Potrošnja")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Broj posade")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Maksimalna brzina")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Izmijeni")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Uništi")])
+      ])
     ])
   },
   function() {
