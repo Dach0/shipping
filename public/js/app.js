@@ -2022,6 +2022,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2029,6 +2043,10 @@ __webpack_require__.r(__webpack_exports__);
       editShipmode: false,
       ships: [],
       destinations: [],
+      properties: [],
+      selected_consumption: null,
+      selected_crew_number: null,
+      selected_max_speed: null,
       form: new Form({
         id: '',
         destination_name: '',
@@ -2040,6 +2058,24 @@ __webpack_require__.r(__webpack_exports__);
         property_id: ''
       })
     };
+  },
+  computed: {
+    // a computed getter
+    propertyConsumption: function propertyConsumption() {
+      return this.properties.filter(function (property) {
+        return property.property_name == 'consumption';
+      });
+    },
+    propertyMaxSpeed: function propertyMaxSpeed() {
+      return this.properties.filter(function (property) {
+        return property.property_name == 'max_speed';
+      });
+    },
+    propertyCrewNumber: function propertyCrewNumber() {
+      return this.properties.filter(function (property) {
+        return property.property_name == 'crew_number';
+      });
+    }
   },
   methods: {
     loadShips: function loadShips() {
@@ -2058,34 +2094,20 @@ __webpack_require__.r(__webpack_exports__);
         return _this2.destinations = data;
       });
     },
+    loadProperties: function loadProperties() {
+      var _this3 = this;
+
+      axios.get('api/property').then(function (_ref3) {
+        var data = _ref3.data;
+        return _this3.properties = data;
+      });
+    },
     editDestinationModal: function editDestinationModal(dist) {
       this.editmode = true;
       $('#addDestinationModal').modal('show');
       this.form.fill(dist);
     },
     deleteDestination: function deleteDestination(id) {
-      var _this3 = this;
-
-      Swal.fire({
-        title: 'Jeste li sigurni?',
-        text: "Nećete moći da opozovete akciju!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Da, obriši!'
-      }).then(function (result) {
-        if (result.value) {
-          _this3.form["delete"]('api/destination/' + id).then(function () {
-            Swal.fire('Obrisano!', 'Destinacija je obrisana', 'success');
-            Event.$emit('dbChanged');
-          })["catch"](function () {
-            Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
-          });
-        }
-      });
-    },
-    deleteShip: function deleteShip(id) {
       var _this4 = this;
 
       Swal.fire({
@@ -2098,7 +2120,29 @@ __webpack_require__.r(__webpack_exports__);
         confirmButtonText: 'Da, obriši!'
       }).then(function (result) {
         if (result.value) {
-          _this4.shipForm["delete"]('api/ship/' + id).then(function () {
+          _this4.form["delete"]('api/destination/' + id).then(function () {
+            Swal.fire('Obrisano!', 'Destinacija je obrisana', 'success');
+            Event.$emit('dbChanged');
+          })["catch"](function () {
+            Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+          });
+        }
+      });
+    },
+    deleteShip: function deleteShip(id) {
+      var _this5 = this;
+
+      Swal.fire({
+        title: 'Jeste li sigurni?',
+        text: "Nećete moći da opozovete akciju!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Da, obriši!'
+      }).then(function (result) {
+        if (result.value) {
+          _this5.shipForm["delete"]('api/ship/' + id).then(function () {
             Swal.fire('Obrisano!', 'Brod je obrisan', 'success');
             Event.$emit('dbShipChanged');
           })["catch"](function () {
@@ -2164,15 +2208,16 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    var _this5 = this;
+    var _this6 = this;
 
     this.loadDestinatios();
     this.loadShips();
+    this.loadProperties();
     Event.$on('dbChanged', function () {
-      _this5.loadDestinatios();
+      _this6.loadDestinatios();
     });
     Event.$on('dbShipChanged', function () {
-      _this5.loadShips();
+      _this6.loadShips();
     });
   }
 });
@@ -70513,17 +70558,20 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.shipForm.property_id,
-                                expression: "shipForm.property_id"
+                                value: _vm.selected_consumption,
+                                expression: "selected_consumption"
                               }
                             ],
                             staticClass: "form-control",
                             class: {
                               "is-invalid": _vm.shipForm.errors.has(
-                                "property_id"
+                                "property_consumption"
                               )
                             },
-                            attrs: { type: "text", name: "property_id" },
+                            attrs: {
+                              type: "text",
+                              name: "property_consumption"
+                            },
                             on: {
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
@@ -70534,37 +70582,179 @@ var render = function() {
                                     var val = "_value" in o ? o._value : o.value
                                     return val
                                   })
-                                _vm.$set(
-                                  _vm.shipForm,
-                                  "property_id",
-                                  $event.target.multiple
-                                    ? $$selectedVal
-                                    : $$selectedVal[0]
-                                )
+                                _vm.selected_consumption = $event.target
+                                  .multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
                               }
                             }
                           },
                           [
-                            _c("option", { attrs: { value: "" } }, [
-                              _vm._v("Izaberi svojstva")
+                            _c("option", { domProps: { value: null } }, [
+                              _vm._v("Izaberi potrošnju")
                             ]),
                             _vm._v(" "),
-                            _c("option", { attrs: { value: "1" } }, [
-                              _vm._v("1")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "2" } }, [
-                              _vm._v("2")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "3" } }, [
-                              _vm._v("3")
-                            ])
-                          ]
+                            _vm._l(_vm.propertyConsumption, function(
+                              consumption
+                            ) {
+                              return _c(
+                                "option",
+                                {
+                                  key: consumption.id,
+                                  domProps: { value: consumption.id }
+                                },
+                                [_vm._v(_vm._s(consumption.property_amount))]
+                              )
+                            })
+                          ],
+                          2
                         ),
                         _vm._v(" "),
                         _c("has-error", {
-                          attrs: { form: _vm.shipForm, field: "property_id" }
+                          attrs: {
+                            form: _vm.shipForm,
+                            field: "property_consumption"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.selected_crew_number,
+                                expression: "selected_crew_number"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.shipForm.errors.has(
+                                "property_crew_number"
+                              )
+                            },
+                            attrs: {
+                              type: "text",
+                              name: "property_crew_number"
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.selected_crew_number = $event.target
+                                  .multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "null" } }, [
+                              _vm._v("Izaberi broj članova posade")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.propertyCrewNumber, function(
+                              crew_number
+                            ) {
+                              return _c(
+                                "option",
+                                {
+                                  key: crew_number.id,
+                                  domProps: { value: crew_number.id }
+                                },
+                                [_vm._v(_vm._s(crew_number.property_amount))]
+                              )
+                            })
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: {
+                            form: _vm.shipForm,
+                            field: "property_crew_number"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.selected_max_speed,
+                                expression: "selected_max_speed"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.shipForm.errors.has(
+                                "property_max_speed"
+                              )
+                            },
+                            attrs: { type: "text", name: "property_max_speed" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.selected_max_speed = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "null" } }, [
+                              _vm._v("Izaberi maksimalnu brzinu")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.propertyMaxSpeed, function(max_speed) {
+                              return _c(
+                                "option",
+                                {
+                                  key: max_speed.id,
+                                  domProps: { value: max_speed.id }
+                                },
+                                [_vm._v(_vm._s(max_speed.property_amount))]
+                              )
+                            })
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: {
+                            form: _vm.shipForm,
+                            field: "property_max_speed"
+                          }
                         })
                       ],
                       1
