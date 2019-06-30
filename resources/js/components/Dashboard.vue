@@ -133,14 +133,28 @@
 
                                    
                     <div class="form-group">
-                        <select v-model="shipForm.property_id" type="text" name="property_id"
-                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('property_id') }">
-                            <option value="">Izaberi svojstva</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
+                        <select v-model="selected_consumption" type="text" name="property_consumption"
+                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('property_consumption') }">
+                            <option :value="null">Izaberi potrošnju</option>
+                            <option v-for="consumption in propertyConsumption" v-bind:key="consumption.id" :value="consumption.id">{{consumption.property_amount}}</option>
                         </select>
-                        <has-error :form="shipForm" field="property_id"></has-error>
+                        <has-error :form="shipForm" field="property_consumption"></has-error>
+                    </div>
+                    <div class="form-group">
+                        <select v-model="selected_crew_number" type="text" name="property_crew_number"
+                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('property_crew_number') }">
+                            <option value="null">Izaberi broj članova posade</option>
+                            <option v-for="crew_number in propertyCrewNumber" :key="crew_number.id" :value="crew_number.id">{{crew_number.property_amount}}</option>
+                        </select>
+                        <has-error :form="shipForm" field="property_crew_number"></has-error>
+                    </div>
+                    <div class="form-group">
+                        <select v-model="selected_max_speed" type="text" name="property_max_speed"
+                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('property_max_speed') }">
+                            <option value="null">Izaberi maksimalnu brzinu</option>
+                            <option v-for="max_speed in propertyMaxSpeed" :key="max_speed.id" :value="max_speed.id">{{ max_speed.property_amount }}</option>
+                        </select>
+                        <has-error :form="shipForm" field="property_max_speed"></has-error>
                     </div>
 
              </div>
@@ -168,6 +182,10 @@
                 editShipmode: false,
                 ships: [],
                 destinations: [],
+                properties: [],
+                selected_consumption: null,
+                selected_crew_number: null,
+                selected_max_speed: null,
                 form: new Form({
                     id: '',
                     destination_name : '',
@@ -180,12 +198,27 @@
                 })
             }
         },
+        computed: {
+            // a computed getter
+            propertyConsumption: function () {
+                return this.properties.filter(property => property.property_name == 'consumption')
+            },
+            propertyMaxSpeed: function () {
+                return this.properties.filter(property => property.property_name == 'max_speed')
+            },
+            propertyCrewNumber: function () {
+                return this.properties.filter(property => property.property_name == 'crew_number')
+            }
+        },
         methods:{
             loadShips(){
                 axios.get('api/ship').then( ({data}) => (this.ships = data) );
             },
             loadDestinatios(){
                 axios.get('api/destination').then( ({data}) => (this.destinations = data) );
+            },
+            loadProperties(){
+                axios.get('api/property').then(({data}) => (this.properties = data));
             },
             editDestinationModal(dist){
                 this.editmode = true;
@@ -320,6 +353,7 @@
         mounted() {
             this.loadDestinatios();
             this.loadShips();
+            this.loadProperties();
 
             Event.$on('dbChanged', () => {
                 this.loadDestinatios()
