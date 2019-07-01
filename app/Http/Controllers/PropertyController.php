@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Property;
 use Illuminate\Http\Request;
+use App\Http\Requests\StorePropertyRequest;
 
 class PropertyController extends Controller
 {
@@ -33,9 +34,11 @@ class PropertyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePropertyRequest $request)
     {
-        //
+        Property::create($request->all());
+
+        return ['msg' => 'Kreiran property'];
     }
 
     /**

@@ -111,7 +111,7 @@
 
 
       <!-- SHIP MODAL -->
-<div class="modal fade" id="addShipModal" tabindex="-1" role="dialog" aria-labelledby="addDestinationModalLabel" aria-hidden="true">
+<div class="modal hide fade" id="addShipModal" tabindex="-1" role="dialog" aria-labelledby="addDestinationModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -132,29 +132,32 @@
                 </div>
 
                                    
-                    <div class="form-group">
-                        <select v-model="selected_consumption" type="text" name="property_consumption"
-                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('property_consumption') }">
+                    <div class="form-group input-group">
+                        <select v-model="shipForm.selected_consumption" type="text" name="consumption"
+                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('selected_consumption') }">
                             <option :value="null">Izaberi potrošnju</option>
                             <option v-for="consumption in propertyConsumption" v-bind:key="consumption.id" :value="consumption.id">{{consumption.property_amount}}</option>
                         </select>
-                        <has-error :form="shipForm" field="property_consumption"></has-error>
+                        <div class="input-group-append">
+                            <button class="btn btn-info" type="button" @click="newPropertyConsumptionModal">Dodaj potrošnju</button>
+                        </div>
+                        <has-error :form="shipForm" field="selected_consumption"></has-error>
                     </div>
                     <div class="form-group">
-                        <select v-model="selected_crew_number" type="text" name="property_crew_number"
-                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('property_crew_number') }">
+                        <select v-model="shipForm.selected_crew_number" type="text" name="crew_number"
+                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('selected_crew_number') }">
                             <option value="null">Izaberi broj članova posade</option>
                             <option v-for="crew_number in propertyCrewNumber" :key="crew_number.id" :value="crew_number.id">{{crew_number.property_amount}}</option>
                         </select>
-                        <has-error :form="shipForm" field="property_crew_number"></has-error>
+                        <has-error :form="shipForm" field="selected_crew_number"></has-error>
                     </div>
                     <div class="form-group">
-                        <select v-model="selected_max_speed" type="text" name="property_max_speed"
-                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('property_max_speed') }">
+                        <select v-model="shipForm.selected_max_speed" type="text" name="max_speed"
+                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('selected_max_speed') }">
                             <option value="null">Izaberi maksimalnu brzinu</option>
                             <option v-for="max_speed in propertyMaxSpeed" :key="max_speed.id" :value="max_speed.id">{{ max_speed.property_amount }}</option>
                         </select>
-                        <has-error :form="shipForm" field="property_max_speed"></has-error>
+                        <has-error :form="shipForm" field="selected_max_speed"></has-error>
                     </div>
 
              </div>
@@ -171,6 +174,37 @@
 </div>
 <!-- /SHIP MODAL -->
 
+<!-- AddPropertyConsumption MODAL -->
+<div class="modal hide fade" id="addPropertyConsumptionModal" tabindex="-1" role="dialog" aria-labelledby="addPropertyConsumptionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nova destinacija</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+        <form @submit.prevent="storePropertyConsumption()">
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <input v-model="newPropertyConsumption" type="text" name="newPropertyConsumption" placeholder="Potrošnja l/km"
+                        class="form-control">
+                </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Odustani</button>
+        <button v-show="!editmode" type="submit" class="btn btn-primary">Sačuvaj</button>
+      </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+<!-- /AddPropertyConsumption MODAL -->
+
     </div>
 </template>
 
@@ -183,9 +217,7 @@
                 ships: [],
                 destinations: [],
                 properties: [],
-                selected_consumption: null,
-                selected_crew_number: null,
-                selected_max_speed: null,
+                newPropertyConsumption: '',
                 form: new Form({
                     id: '',
                     destination_name : '',
@@ -194,7 +226,10 @@
                 shipForm: new Form({
                     id:'',
                     boat_name:'',
-                    property_id:''
+                    property_id:'',
+                    selected_consumption: null,
+                    selected_crew_number: null,
+                    selected_max_speed: null,
                 })
             }
         },
@@ -349,6 +384,32 @@
                 this.shipForm.reset();
                 $('#addShipModal').modal('show');
             },
+            newPropertyConsumptionModal(){
+                // console.log('Hitting it');
+                $('#addPropertyConsumptionModal').modal('show');
+            },
+            storePropertyConsumption(){
+                axios.post('api/property', {
+                    "property_name" : 'consumption',
+                    "property_amount" : this.newPropertyConsumption
+                })
+                 .then(() => { 
+                    Event.$emit('dbPropertyChanged');
+                    
+                    $('#addPropertyConsumptionModal').modal('hide');
+
+                    Swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Nova potrošnja unešena u bazu',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                })
+                .catch(() => {
+                     Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+                })
+            }
         },
         mounted() {
             this.loadDestinatios();
@@ -361,6 +422,10 @@
 
             Event.$on('dbShipChanged', () => {
                 this.loadShips()
+            });
+
+            Event.$on('dbPropertyChanged', () => {
+                this.loadProperties()
             });
         }
     }

@@ -2036,6 +2036,40 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2044,9 +2078,7 @@ __webpack_require__.r(__webpack_exports__);
       ships: [],
       destinations: [],
       properties: [],
-      selected_consumption: null,
-      selected_crew_number: null,
-      selected_max_speed: null,
+      newPropertyConsumption: '',
       form: new Form({
         id: '',
         destination_name: '',
@@ -2055,7 +2087,10 @@ __webpack_require__.r(__webpack_exports__);
       shipForm: new Form({
         id: '',
         boat_name: '',
-        property_id: ''
+        property_id: '',
+        selected_consumption: null,
+        selected_crew_number: null,
+        selected_max_speed: null
       })
     };
   },
@@ -2205,6 +2240,28 @@ __webpack_require__.r(__webpack_exports__);
       this.editShipmode = false;
       this.shipForm.reset();
       $('#addShipModal').modal('show');
+    },
+    newPropertyConsumptionModal: function newPropertyConsumptionModal() {
+      // console.log('Hitting it');
+      $('#addPropertyConsumptionModal').modal('show');
+    },
+    storePropertyConsumption: function storePropertyConsumption() {
+      axios.post('api/property', {
+        "property_name": 'consumption',
+        "property_amount": this.newPropertyConsumption
+      }).then(function () {
+        Event.$emit('dbPropertyChanged');
+        $('#addPropertyConsumptionModal').modal('hide');
+        Swal.fire({
+          position: 'center',
+          type: 'success',
+          title: 'Nova potrošnja unešena u bazu',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })["catch"](function () {
+        Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+      });
     }
   },
   mounted: function mounted() {
@@ -2218,6 +2275,9 @@ __webpack_require__.r(__webpack_exports__);
     });
     Event.$on('dbShipChanged', function () {
       _this6.loadShips();
+    });
+    Event.$on('dbPropertyChanged', function () {
+      _this6.loadProperties();
     });
   }
 });
@@ -70437,7 +70497,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal hide fade",
         attrs: {
           id: "addShipModal",
           tabindex: "-1",
@@ -70549,7 +70609,7 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "div",
-                      { staticClass: "form-group" },
+                      { staticClass: "form-group input-group" },
                       [
                         _c(
                           "select",
@@ -70558,20 +70618,17 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.selected_consumption,
-                                expression: "selected_consumption"
+                                value: _vm.shipForm.selected_consumption,
+                                expression: "shipForm.selected_consumption"
                               }
                             ],
                             staticClass: "form-control",
                             class: {
                               "is-invalid": _vm.shipForm.errors.has(
-                                "property_consumption"
+                                "selected_consumption"
                               )
                             },
-                            attrs: {
-                              type: "text",
-                              name: "property_consumption"
-                            },
+                            attrs: { type: "text", name: "consumption" },
                             on: {
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
@@ -70582,10 +70639,13 @@ var render = function() {
                                     var val = "_value" in o ? o._value : o.value
                                     return val
                                   })
-                                _vm.selected_consumption = $event.target
-                                  .multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
+                                _vm.$set(
+                                  _vm.shipForm,
+                                  "selected_consumption",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
                               }
                             }
                           },
@@ -70610,10 +70670,22 @@ var render = function() {
                           2
                         ),
                         _vm._v(" "),
+                        _c("div", { staticClass: "input-group-append" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-info",
+                              attrs: { type: "button" },
+                              on: { click: _vm.newPropertyConsumptionModal }
+                            },
+                            [_vm._v("Dodaj potrošnju")]
+                          )
+                        ]),
+                        _vm._v(" "),
                         _c("has-error", {
                           attrs: {
                             form: _vm.shipForm,
-                            field: "property_consumption"
+                            field: "selected_consumption"
                           }
                         })
                       ],
@@ -70631,20 +70703,17 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.selected_crew_number,
-                                expression: "selected_crew_number"
+                                value: _vm.shipForm.selected_crew_number,
+                                expression: "shipForm.selected_crew_number"
                               }
                             ],
                             staticClass: "form-control",
                             class: {
                               "is-invalid": _vm.shipForm.errors.has(
-                                "property_crew_number"
+                                "selected_crew_number"
                               )
                             },
-                            attrs: {
-                              type: "text",
-                              name: "property_crew_number"
-                            },
+                            attrs: { type: "text", name: "crew_number" },
                             on: {
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
@@ -70655,10 +70724,13 @@ var render = function() {
                                     var val = "_value" in o ? o._value : o.value
                                     return val
                                   })
-                                _vm.selected_crew_number = $event.target
-                                  .multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
+                                _vm.$set(
+                                  _vm.shipForm,
+                                  "selected_crew_number",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
                               }
                             }
                           },
@@ -70686,7 +70758,7 @@ var render = function() {
                         _c("has-error", {
                           attrs: {
                             form: _vm.shipForm,
-                            field: "property_crew_number"
+                            field: "selected_crew_number"
                           }
                         })
                       ],
@@ -70704,17 +70776,17 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.selected_max_speed,
-                                expression: "selected_max_speed"
+                                value: _vm.shipForm.selected_max_speed,
+                                expression: "shipForm.selected_max_speed"
                               }
                             ],
                             staticClass: "form-control",
                             class: {
                               "is-invalid": _vm.shipForm.errors.has(
-                                "property_max_speed"
+                                "selected_max_speed"
                               )
                             },
-                            attrs: { type: "text", name: "property_max_speed" },
+                            attrs: { type: "text", name: "max_speed" },
                             on: {
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
@@ -70725,9 +70797,13 @@ var render = function() {
                                     var val = "_value" in o ? o._value : o.value
                                     return val
                                   })
-                                _vm.selected_max_speed = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
+                                _vm.$set(
+                                  _vm.shipForm,
+                                  "selected_max_speed",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
                               }
                             }
                           },
@@ -70753,7 +70829,7 @@ var render = function() {
                         _c("has-error", {
                           attrs: {
                             form: _vm.shipForm,
-                            field: "property_max_speed"
+                            field: "selected_max_speed"
                           }
                         })
                       ],
@@ -70797,6 +70873,105 @@ var render = function() {
                             rawName: "v-show",
                             value: !_vm.editShipmode,
                             expression: "!editShipmode"
+                          }
+                        ],
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Sačuvaj")]
+                    )
+                  ])
+                ]
+              )
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal hide fade",
+        attrs: {
+          id: "addPropertyConsumptionModal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "addPropertyConsumptionModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(4),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.storePropertyConsumption()
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.newPropertyConsumption,
+                            expression: "newPropertyConsumption"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "text",
+                          name: "newPropertyConsumption",
+                          placeholder: "Potrošnja l/km"
+                        },
+                        domProps: { value: _vm.newPropertyConsumption },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.newPropertyConsumption = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-secondary",
+                        attrs: { type: "button", "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Odustani")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: !_vm.editmode,
+                            expression: "!editmode"
                           }
                         ],
                         staticClass: "btn btn-primary",
@@ -70888,6 +71063,27 @@ var staticRenderFns = [
       },
       [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
     )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [_vm._v("Nova destinacija")]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
   }
 ]
 render._withStripped = true

@@ -25,7 +25,9 @@ class StoreShipRequest extends FormRequest
     {
         return [
             'boat_name' => 'required|max:35',
-            'property_id' => 'required'
+            'selected_consumption' => 'required',
+            'selected_crew_number' => 'required',
+            'selected_max_speed' => 'required'
         ];
     }
 
@@ -33,7 +35,9 @@ class StoreShipRequest extends FormRequest
     {
         return [
             'boat_name.required' => 'Ime brodića je neophodno, do 35 karaktera molim',
-            'property_id.required' => 'Izaberite neku od opcija ili dodajte novu pa je selektujte'
+            'selected_consumption.required' => 'Izaberite neku od opcija ili dodajte novu pa je selektujte',
+            'selected_crew_number.required' => 'Izaberite neku od opcija ili dodajte novu pa je selektujte',
+            'selected_max_speed.required' => 'Izaberite neku od opcija ili dodajte novu pa je selektujte'
         ];
     }
 }

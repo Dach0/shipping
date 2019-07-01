@@ -11,6 +11,14 @@ class ShipsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Ship::class, 3)->create();
+        // factory(App\Ship::class, 3)->create();
+        $boat_names = ['Barakuda', 'Kapetan kuka', 'Jegulja'];
+
+        foreach ($boat_names as $key => $value) {
+            DB::table('ships')->insert(
+                array(
+                    'boat_name' => $value
+                     )
+        );}
     }
 }

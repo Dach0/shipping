@@ -36,10 +36,9 @@ class ShipController extends Controller
      */
     public function store(StoreShipRequest $request)
     {
+        $ship = Ship::create(['boat_name' => $request->boat_name]);
 
-        $ship = Ship::create([ 'boat_name' => $request->boat_name]);
-
-        $ship->properties()->attach($request->property_id);
+        $ship->properties()->attach([$request->selected_consumption, $request->selected_max_speed, $request->selected_crew_number]);
 
         return ['message' => 'Kreiran brod'];
     }
@@ -87,8 +86,9 @@ class ShipController extends Controller
     public function destroy($id)
     {
         $ship = Ship::findOrFail($id);
-       
-        $ship->properties()->detach($ship->pivot->property_id);
+ 
+        $ship->properties()->detach();
+
         $ship->delete();
         return ['msg' => 'Obrisan brod'];
     }
