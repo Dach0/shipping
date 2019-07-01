@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StorePropertyRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'property_name' => 'required|max:35',
+            'property_amount' => 'required'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'property_name' => 'Ime propertija je neophodno, do 35 karaktera molim',
+            'property_amount' => 'Količinu je neophodno unijeti i mora biti broj'
+        ];
+    }
+}
