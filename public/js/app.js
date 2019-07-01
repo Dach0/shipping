@@ -2044,9 +2044,6 @@ __webpack_require__.r(__webpack_exports__);
       ships: [],
       destinations: [],
       properties: [],
-      selected_consumption: null,
-      selected_crew_number: null,
-      selected_max_speed: null,
       form: new Form({
         id: '',
         destination_name: '',
@@ -2055,7 +2052,10 @@ __webpack_require__.r(__webpack_exports__);
       shipForm: new Form({
         id: '',
         boat_name: '',
-        property_id: ''
+        property_id: '',
+        selected_consumption: null,
+        selected_crew_number: null,
+        selected_max_speed: null
       })
     };
   },
@@ -70558,20 +70558,17 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.selected_consumption,
-                                expression: "selected_consumption"
+                                value: _vm.shipForm.selected_consumption,
+                                expression: "shipForm.selected_consumption"
                               }
                             ],
                             staticClass: "form-control",
                             class: {
                               "is-invalid": _vm.shipForm.errors.has(
-                                "property_consumption"
+                                "selected_consumption"
                               )
                             },
-                            attrs: {
-                              type: "text",
-                              name: "property_consumption"
-                            },
+                            attrs: { type: "text", name: "consumption" },
                             on: {
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
@@ -70582,10 +70579,13 @@ var render = function() {
                                     var val = "_value" in o ? o._value : o.value
                                     return val
                                   })
-                                _vm.selected_consumption = $event.target
-                                  .multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
+                                _vm.$set(
+                                  _vm.shipForm,
+                                  "selected_consumption",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
                               }
                             }
                           },
@@ -70613,7 +70613,7 @@ var render = function() {
                         _c("has-error", {
                           attrs: {
                             form: _vm.shipForm,
-                            field: "property_consumption"
+                            field: "selected_consumption"
                           }
                         })
                       ],
@@ -70631,20 +70631,17 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.selected_crew_number,
-                                expression: "selected_crew_number"
+                                value: _vm.shipForm.selected_crew_number,
+                                expression: "shipForm.selected_crew_number"
                               }
                             ],
                             staticClass: "form-control",
                             class: {
                               "is-invalid": _vm.shipForm.errors.has(
-                                "property_crew_number"
+                                "selected_crew_number"
                               )
                             },
-                            attrs: {
-                              type: "text",
-                              name: "property_crew_number"
-                            },
+                            attrs: { type: "text", name: "crew_number" },
                             on: {
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
@@ -70655,10 +70652,13 @@ var render = function() {
                                     var val = "_value" in o ? o._value : o.value
                                     return val
                                   })
-                                _vm.selected_crew_number = $event.target
-                                  .multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
+                                _vm.$set(
+                                  _vm.shipForm,
+                                  "selected_crew_number",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
                               }
                             }
                           },
@@ -70686,7 +70686,7 @@ var render = function() {
                         _c("has-error", {
                           attrs: {
                             form: _vm.shipForm,
-                            field: "property_crew_number"
+                            field: "selected_crew_number"
                           }
                         })
                       ],
@@ -70704,17 +70704,17 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.selected_max_speed,
-                                expression: "selected_max_speed"
+                                value: _vm.shipForm.selected_max_speed,
+                                expression: "shipForm.selected_max_speed"
                               }
                             ],
                             staticClass: "form-control",
                             class: {
                               "is-invalid": _vm.shipForm.errors.has(
-                                "property_max_speed"
+                                "selected_max_speed"
                               )
                             },
-                            attrs: { type: "text", name: "property_max_speed" },
+                            attrs: { type: "text", name: "max_speed" },
                             on: {
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
@@ -70725,9 +70725,13 @@ var render = function() {
                                     var val = "_value" in o ? o._value : o.value
                                     return val
                                   })
-                                _vm.selected_max_speed = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
+                                _vm.$set(
+                                  _vm.shipForm,
+                                  "selected_max_speed",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
                               }
                             }
                           },
@@ -70753,7 +70757,7 @@ var render = function() {
                         _c("has-error", {
                           attrs: {
                             form: _vm.shipForm,
-                            field: "property_max_speed"
+                            field: "selected_max_speed"
                           }
                         })
                       ],
