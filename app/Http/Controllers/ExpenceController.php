@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Expense;
+use App\Expence;
 use Illuminate\Http\Request;
 
-class ExpenseController extends Controller
+class ExpenceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class ExpenseController extends Controller
      */
     public function index()
     {
-        //
+        return Expence::orderBy('expence_name')->orderBy('expence_amount', 'desc')->paginate(10);
     }
 
     /**
@@ -41,10 +41,10 @@ class ExpenseController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Expense  $expense
+     * @param  \App\Expence  $expence
      * @return \Illuminate\Http\Response
      */
-    public function show(Expense $expense)
+    public function show(Expence $expence)
     {
         //
     }
@@ -52,10 +52,10 @@ class ExpenseController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Expense  $expense
+     * @param  \App\Expence  $expence
      * @return \Illuminate\Http\Response
      */
-    public function edit(Expense $expense)
+    public function edit(Expence $expence)
     {
         //
     }
@@ -64,10 +64,10 @@ class ExpenseController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Expense  $expense
+     * @param  \App\Expence  $expence
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Expense $expense)
+    public function update(Request $request, Expence $expence)
     {
         //
     }
@@ -75,10 +75,10 @@ class ExpenseController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Expense  $expense
+     * @param  \App\Expence  $expence
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Expense $expense)
+    public function destroy(Expence $expence)
     {
         //
     }

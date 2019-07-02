@@ -3,16 +3,15 @@
         <div class="row justify-content-center">
              <div class="col-12 mt-2 mb-3">
                     <div class="d-flex justify-content-between">
-                        <h4>Spisak brodova</h4>  
-                        <button class="btn btn-sm btn-primary mb-2"  @click="newShipModal">Dodaj brod</button>
+                        <h4>Spisak troškova po brodu</h4>  
                     </div>
                     <table class="table table-striped">
                             <thead>
                                 <tr>
                                 <th scope="col">Ime broda</th>
-                                <th scope="col">Potrošnja</th>
-                                <th scope="col">Broj posade</th>
-                                <th scope="col">Maksimalna brzina</th>
+                                <th scope="col">Prosječna plata</th>
+                                <th scope="col">Cijena goriva</th>
+                                <th scope="col">Cijena obroka</th>
                                 <th scope="col">Izmijeni</th>
                                 <th scope="col">Uništi</th>
                                 </tr>
@@ -20,9 +19,9 @@
                             <tbody>
                                 <tr  v-for="ship in ships" :key="ship.id">
                                     <td>{{ ship.boat_name }}</td>
-                                    <td>{{ ship.properties[1].property_amount }} l/km</td>
-                                    <td>{{ ship.properties[2].property_amount }}</td>
-                                    <td>{{ ship.properties[0].property_amount }} čvorova</td>
+                                    <td>{{ ship.expences[0].expence_amount }} €</td>
+                                    <td>{{ ship.expences[1].expence_amount }} €/litru</td>
+                                    <td>{{ ship.expences[2].expence_amount }} €/obroku</td>
                                     <td>
                                         <button class="btn btn-sm btn-success" @click="editShipModal(ship.id)">Izmijeni</button>
                                     </td>
@@ -35,27 +34,25 @@
              </div>
             
              <div class="col-12 mt-3">
-                 <div class="d-flex justify-content-between">
-                    <h4>Spisak destinacija</h4>  
-                    <button class="btn btn-sm btn-primary mb-2"  @click="newModal">Dodaj destinaciju</button>
+                 <div class="d-flex">
+                    <h4 class=" mr-auto">Spisak troškova</h4>  
+                    <button class="btn btn-sm btn-primary mb-2 mr-1"  @click="newModal">Dodaj prosječnu platu</button>
+                    <button class="btn btn-sm btn-primary mb-2 mr-1"  @click="newModal">Dodaj cijenu goriva</button>
+                    <button class="btn btn-sm btn-primary mb-2 mr-1"  @click="newModal">Dodaj cijenu obroka</button>
                  </div>
                    <table class="table table-striped">
                         <thead>
                             <tr>
-                            <th scope="col">Destinacija</th>
-                            <th scope="col">Udaljenost</th>
-                            <th scope="col">Napravljena</th>
-                            <th scope="col">Izmijenjena</th>
+                            <th scope="col">Opis troška</th>
+                            <th scope="col">Vrijednost</th>
                             <th scope="col">Izmijeni</th>
                             <th scope="col">Uništi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="dist in destinations" :key="dist.id">
-                                <td>{{ dist.destination_name }}</td>
-                                <td>{{ dist.distance }}</td>
-                                <td>{{ dist.created_at }}</td>
-                                <td>{{ dist.updated_at }}</td>
+                            <tr v-for="expence in expences" :key="expence.id">
+                                <td>{{ expence.expence_name }}</td>
+                                <td>{{ expence.expence_amount }}</td>
                                 <td>
                                     <button class="btn btn-sm btn-success" @click="editDestinationModal(dist)">Izmijeni</button>
                                 </td>
@@ -284,10 +281,10 @@
                 editShipmode: false,
                 ships: [],
                 destinations: [],
-                properties: [],
-                newPropertyConsumption: '',
-                newPropertyCrewNumber: '',
-                newPropertyMaxSpeed: '',
+                expences: [],
+                avg_paycheck: '',
+                fuel_price: '',
+                foof_price: '',
                 form: new Form({
                     id: '',
                     destination_name : '',
@@ -305,26 +302,22 @@
         },
         computed: {
             // a computed getter
-            propertyConsumption: function () {
-                let properties = this.properties.filter(property => property.property_name == 'consumption');
-                return _.orderBy(properties, properties.property_amount)
+            expenceAvgPaycheck: function () {
+               return this.expences.filter(expence => expence.expence_name == 'avg_paycheck');
             },
-            propertyMaxSpeed: function () {
-                return this.properties.filter(property => property.property_name == 'max_speed')
+            expenceFuelPrice: function () {
+                return this.expences.filter(expence => expence.expence_name == 'fuel_price')
             },
-            propertyCrewNumber: function () {
-                return this.properties.filter(property => property.property_name == 'crew_number')
+            expenceFoodPrice: function () {
+                return this.expences.filter(expence => expence.expence_name == 'food_price')
             }
         },
         methods:{
             loadShips(){
-                axios.get('api/ship').then( ({data}) => (this.ships = data) );
+                axios.get('api/ship/expences/all').then( ({data}) => (this.ships = data) );
             },
-            loadDestinatios(){
-                axios.get('api/destination').then( ({data}) => (this.destinations = data) );
-            },
-            loadProperties(){
-                axios.get('api/property').then(({data}) => (this.properties = data));
+            loadExpences(){
+                axios.get('api/expence').then(({data}) => (this.expences = data.data));
             },
             editDestinationModal(dist){
                 this.editmode = true;
@@ -563,13 +556,8 @@
             }
         },
         mounted() {
-            this.loadDestinatios();
             this.loadShips();
-            this.loadProperties();
-
-            Event.$on('dbChanged', () => {
-                this.loadDestinatios()
-            });
+            this.loadExpences();
 
             Event.$on('dbShipChanged', () => {
                 this.loadShips()

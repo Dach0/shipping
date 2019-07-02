@@ -13,11 +13,11 @@ class PropertiesTableSeeder extends Seeder
     {
         // factory(App\Property::class, 6)->create();
         
-        $boat_names=['consumption', 'crew_number', 'max_speed'];
+        $properties=['consumption', 'crew_number', 'max_speed'];
 
 
         for ($i=0; $i < 3 ; $i++) { 
-            foreach ($boat_names as $key => $value) {
+            foreach ($properties as $key => $value) {
                 DB::table('properties')->insert(
                     array(
                         'property_name' => $value,

@@ -20,13 +20,13 @@ class ShipController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a list of ships with expenses.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function shipsWithExpences()
     {
-        //
+        return Ship::with('expences')->get();
     }
 
     /**
@@ -41,6 +41,8 @@ class ShipController extends Controller
 
         $ship->properties()->attach([$request->selected_consumption, $request->selected_max_speed, $request->selected_crew_number]);
 
+        $ship->expences()->attach(1,1,1);
+
         return ['message' => 'Kreiran brod'];
     }
 
@@ -52,7 +54,7 @@ class ShipController extends Controller
      */
     public function show($id)
     {
-        // $ship = Ship::findOrFail($id)->with('properties')->get();    -> vraća sve veze!?
+        // return Ship::with('properties','expences')->findOrFail($id);  -> ako hoću da hendlujem na frontu
 
         $ship = Ship::findOrFail($id);
         $consumption_id = null;
@@ -75,6 +77,11 @@ class ShipController extends Controller
         
     }
 
+    public function showExpence($id)
+    {
+        return Ship::with('expences')->findOrFail($id);
+        //kod za jedan dbro sa expensijima
+    }
     /**
      * Show the form for editing the specified resource.
      *

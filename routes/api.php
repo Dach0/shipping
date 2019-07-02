@@ -20,3 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::resource('destination', 'DestinationController');
 Route::resource('ship', 'ShipController');
 Route::resource('property', 'PropertyController');
+Route::resource('expence', 'ExpenceController');
+
+Route::get('ship/expence/{id}', 'ShipController@showExpence');
+Route::get('ship/expences/all', 'ShipController@shipsWithExpences');
