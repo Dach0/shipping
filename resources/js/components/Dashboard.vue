@@ -24,7 +24,7 @@
                                     <td>{{ ship.properties[2].property_amount }}</td>
                                     <td>{{ ship.properties[0].property_amount }} čvorova</td>
                                     <td>
-                                        <button class="btn btn-sm btn-success" @click="editShipModal(ship)">Izmijeni</button>
+                                        <button class="btn btn-sm btn-success" @click="editShipModal(ship.id)">Izmijeni</button>
                                     </td>
                                     <td>
                                         <button class="btn btn-sm btn-danger" @click="deleteShip(ship.id)">Obriši</button>
@@ -143,20 +143,26 @@
                         </div>
                         <has-error :form="shipForm" field="selected_consumption"></has-error>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group input-group">
                         <select v-model="shipForm.selected_crew_number" type="text" name="crew_number"
                             class="form-control" :class="{ 'is-invalid': shipForm.errors.has('selected_crew_number') }">
                             <option value="null">Izaberi broj članova posade</option>
                             <option v-for="crew_number in propertyCrewNumber" :key="crew_number.id" :value="crew_number.id">{{crew_number.property_amount}}</option>
                         </select>
+                         <div class="input-group-append">
+                            <button class="btn btn-info" type="button" @click="newPropertyCrewNumberModal">Dodaj posadu</button>
+                        </div>
                         <has-error :form="shipForm" field="selected_crew_number"></has-error>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group input-group">
                         <select v-model="shipForm.selected_max_speed" type="text" name="max_speed"
                             class="form-control" :class="{ 'is-invalid': shipForm.errors.has('selected_max_speed') }">
                             <option value="null">Izaberi maksimalnu brzinu</option>
                             <option v-for="max_speed in propertyMaxSpeed" :key="max_speed.id" :value="max_speed.id">{{ max_speed.property_amount }}</option>
                         </select>
+                         <div class="input-group-append">
+                            <button class="btn btn-info" type="button" @click="newPropertyMaxSpeedModal">Dodaj brzinu</button>
+                        </div>
                         <has-error :form="shipForm" field="selected_max_speed"></has-error>
                     </div>
 
@@ -179,7 +185,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Nova destinacija</h5>
+        <h5 class="modal-title">Dodaj novu potro[nju</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -205,6 +211,68 @@
 </div>
 <!-- /AddPropertyConsumption MODAL -->
 
+<!-- AddPropertyCrewNumber MODAL -->
+<div class="modal hide fade" id="addPropertyCrewNumberModal" tabindex="-1" role="dialog" aria-labelledby="addPropertyCrewNumberModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Dodaj novi broj posade</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+        <form @submit.prevent="storePropertyCrewNumber()">
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <input v-model="newPropertyCrewNumber" type="text" placeholder="Unesite broj posade"
+                        class="form-control">
+                </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Odustani</button>
+        <button v-show="!editmode" type="submit" class="btn btn-primary">Sačuvaj</button>
+      </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+<!-- /AddPropertyCrewNumber MODAL -->
+
+<!-- AddPropertyMaxSpeed MODAL -->
+<div class="modal hide fade" id="addPropertyMaxSpeedModal" tabindex="-1" role="dialog" aria-labelledby="addPropertyMaxSpeedModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Dodaj novu maksimalnu brzinu</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+        <form @submit.prevent="storePropertyMaxSpeed()">
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <input v-model="newPropertyMaxSpeed" type="text" placeholder="Unesite max brzinu u čvorovima"
+                        class="form-control">
+                </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Odustani</button>
+        <button v-show="!editmode" type="submit" class="btn btn-primary">Sačuvaj</button>
+      </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+<!-- /AddPropertyMaxSpeed MODAL -->
+
     </div>
 </template>
 
@@ -218,6 +286,8 @@
                 destinations: [],
                 properties: [],
                 newPropertyConsumption: '',
+                newPropertyCrewNumber: '',
+                newPropertyMaxSpeed: '',
                 form: new Form({
                     id: '',
                     destination_name : '',
@@ -236,7 +306,8 @@
         computed: {
             // a computed getter
             propertyConsumption: function () {
-                return this.properties.filter(property => property.property_name == 'consumption')
+                let properties = this.properties.filter(property => property.property_name == 'consumption');
+                return _.orderBy(properties, properties.property_amount)
             },
             propertyMaxSpeed: function () {
                 return this.properties.filter(property => property.property_name == 'max_speed')
@@ -259,7 +330,18 @@
                 this.editmode = true;
                 $('#addDestinationModal').modal('show');
                 this.form.fill(dist);
-
+            },
+            editShipModal($id){
+                this.editShipmode = true;
+                $('#addShipModal').modal('show');
+                axios.get('api/ship/'+$id)
+                    .then(({data}) => (
+                        this.shipForm.id = data.boat_id,
+                        this.shipForm.boat_name = data.boat_name,
+                        this.shipForm.selected_consumption = data.consumption_id,
+                        this.shipForm.selected_crew_number = data.crew_number_id,
+                        this.shipForm.selected_max_speed = data.max_speed_id ));
+                // this.shipForm.fill(ship);
             },
             deleteDestination(id){
                 Swal.fire({
@@ -334,6 +416,25 @@
                      Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
                 });
             },
+            updateShip(){
+                this.shipForm.put("api/ship/"+this.shipForm.id)
+                .then(() => {
+                    Event.$emit('dbShipChanged');
+                    
+                    $('#addDestinationModal').modal('hide');
+
+                    Swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Podaci o destinaciji izmijenjeni',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                 })
+                .catch(() => {
+                     Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+                });
+            },
             createDestination(){
                 this.form.post('api/destination')
                 .then(() => { 
@@ -388,6 +489,12 @@
                 // console.log('Hitting it');
                 $('#addPropertyConsumptionModal').modal('show');
             },
+            newPropertyMaxSpeedModal(){
+                $('#addPropertyMaxSpeedModal').modal('show');
+            },
+            newPropertyCrewNumberModal(){
+                $('#addPropertyCrewNumberModal').modal('show');
+            },
             storePropertyConsumption(){
                 axios.post('api/property', {
                     "property_name" : 'consumption',
@@ -402,6 +509,50 @@
                         position: 'center',
                         type: 'success',
                         title: 'Nova potrošnja unešena u bazu',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                })
+                .catch(() => {
+                     Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+                })
+            },
+            storePropertyCrewNumber(){
+                axios.post('api/property', {
+                    "property_name" : 'crew_number',
+                    "property_amount" : this.newPropertyCrewNumber
+                })
+                 .then(() => { 
+                    Event.$emit('dbPropertyChanged');
+                    
+                    $('#addPropertyCrewNumberModal').modal('hide');
+
+                    Swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Novi broj posade unešen u bazu',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                })
+                .catch(() => {
+                     Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+                })
+            },
+            storePropertyMaxSpeed(){
+                axios.post('api/property', {
+                    "property_name" : 'max_speed',
+                    "property_amount" : this.newPropertyMaxSpeed
+                })
+                 .then(() => { 
+                    Event.$emit('dbPropertyChanged');
+                    
+                    $('#addPropertyMaxSpeedModal').modal('hide');
+
+                    Swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Nova brzina unešena u bazu',
                         showConfirmButton: false,
                         timer: 1500
                         })

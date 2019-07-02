@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Ship;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreShipRequest;
+use App\Http\Requests\UpdateShipRequest;
 
 class ShipController extends Controller
 {
@@ -49,9 +50,29 @@ class ShipController extends Controller
      * @param  \App\Ship  $ship
      * @return \Illuminate\Http\Response
      */
-    public function show(Ship $ship)
+    public function show($id)
     {
-        //
+        // $ship = Ship::findOrFail($id)->with('properties')->get();    -> vraća sve veze!?
+
+        $ship = Ship::findOrFail($id);
+        $consumption_id = null;
+        $crew_number_id = null;
+        $max_speed_id = null;
+
+        foreach ($ship->properties as $property) {
+            if($property->property_name == 'consumption'){
+                $consumption_id = $property->id;
+            }
+            if($property->property_name == 'crew_number'){
+                $crew_number = $property->id;
+            }
+            if($property->property_name == 'max_speed'){
+                $max_speed = $property->id;
+            }
+        }
+
+        return [ 'boat_id' => $ship->id, 'boat_name' => $ship->boat_name, 'consumption_id' => $consumption_id, 'crew_number_id' => $crew_number, 'max_speed_id' => $max_speed ];
+        
     }
 
     /**
@@ -72,9 +93,13 @@ class ShipController extends Controller
      * @param  \App\Ship  $ship
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Ship $ship)
+    public function update(UpdateShipRequest $request)
     {
-        //
+        $ship = Ship::findOrFail($request->id);
+        $ship->properties()->detach();
+        $ship->properties()->attach([$request->selected_consumption, $request->selected_max_speed, $request->selected_crew_number]);
+        $ship->update(['boat_name' => $request->boat_name]);
+        return ['msg' => 'Azurirani podaci o brodu'];
     }
 
     /**
