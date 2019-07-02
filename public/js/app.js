@@ -2070,6 +2070,74 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2079,6 +2147,8 @@ __webpack_require__.r(__webpack_exports__);
       destinations: [],
       properties: [],
       newPropertyConsumption: '',
+      newPropertyCrewNumber: '',
+      newPropertyMaxSpeed: '',
       form: new Form({
         id: '',
         destination_name: '',
@@ -2097,9 +2167,10 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     // a computed getter
     propertyConsumption: function propertyConsumption() {
-      return this.properties.filter(function (property) {
+      var properties = this.properties.filter(function (property) {
         return property.property_name == 'consumption';
       });
+      return _.orderBy(properties, properties.property_amount);
     },
     propertyMaxSpeed: function propertyMaxSpeed() {
       return this.properties.filter(function (property) {
@@ -2142,29 +2213,17 @@ __webpack_require__.r(__webpack_exports__);
       $('#addDestinationModal').modal('show');
       this.form.fill(dist);
     },
-    deleteDestination: function deleteDestination(id) {
+    editShipModal: function editShipModal($id) {
       var _this4 = this;
 
-      Swal.fire({
-        title: 'Jeste li sigurni?',
-        text: "Nećete moći da opozovete akciju!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Da, obriši!'
-      }).then(function (result) {
-        if (result.value) {
-          _this4.form["delete"]('api/destination/' + id).then(function () {
-            Swal.fire('Obrisano!', 'Destinacija je obrisana', 'success');
-            Event.$emit('dbChanged');
-          })["catch"](function () {
-            Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
-          });
-        }
-      });
+      this.editShipmode = true;
+      $('#addShipModal').modal('show');
+      axios.get('api/ship/' + $id).then(function (_ref4) {
+        var data = _ref4.data;
+        return _this4.shipForm.id = data.boat_id, _this4.shipForm.boat_name = data.boat_name, _this4.shipForm.selected_consumption = data.consumption_id, _this4.shipForm.selected_crew_number = data.crew_number_id, _this4.shipForm.selected_max_speed = data.max_speed_id;
+      }); // this.shipForm.fill(ship);
     },
-    deleteShip: function deleteShip(id) {
+    deleteDestination: function deleteDestination(id) {
       var _this5 = this;
 
       Swal.fire({
@@ -2177,7 +2236,29 @@ __webpack_require__.r(__webpack_exports__);
         confirmButtonText: 'Da, obriši!'
       }).then(function (result) {
         if (result.value) {
-          _this5.shipForm["delete"]('api/ship/' + id).then(function () {
+          _this5.form["delete"]('api/destination/' + id).then(function () {
+            Swal.fire('Obrisano!', 'Destinacija je obrisana', 'success');
+            Event.$emit('dbChanged');
+          })["catch"](function () {
+            Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+          });
+        }
+      });
+    },
+    deleteShip: function deleteShip(id) {
+      var _this6 = this;
+
+      Swal.fire({
+        title: 'Jeste li sigurni?',
+        text: "Nećete moći da opozovete akciju!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Da, obriši!'
+      }).then(function (result) {
+        if (result.value) {
+          _this6.shipForm["delete"]('api/ship/' + id).then(function () {
             Swal.fire('Obrisano!', 'Brod je obrisan', 'success');
             Event.$emit('dbShipChanged');
           })["catch"](function () {
@@ -2189,6 +2270,21 @@ __webpack_require__.r(__webpack_exports__);
     updateDestination: function updateDestination() {
       this.form.put("api/destination/" + this.form.id).then(function () {
         Event.$emit('dbChanged');
+        $('#addDestinationModal').modal('hide');
+        Swal.fire({
+          position: 'center',
+          type: 'success',
+          title: 'Podaci o destinaciji izmijenjeni',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      })["catch"](function () {
+        Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+      });
+    },
+    updateShip: function updateShip() {
+      this.shipForm.put("api/ship/" + this.shipForm.id).then(function () {
+        Event.$emit('dbShipChanged');
         $('#addDestinationModal').modal('hide');
         Swal.fire({
           position: 'center',
@@ -2245,6 +2341,12 @@ __webpack_require__.r(__webpack_exports__);
       // console.log('Hitting it');
       $('#addPropertyConsumptionModal').modal('show');
     },
+    newPropertyMaxSpeedModal: function newPropertyMaxSpeedModal() {
+      $('#addPropertyMaxSpeedModal').modal('show');
+    },
+    newPropertyCrewNumberModal: function newPropertyCrewNumberModal() {
+      $('#addPropertyCrewNumberModal').modal('show');
+    },
     storePropertyConsumption: function storePropertyConsumption() {
       axios.post('api/property', {
         "property_name": 'consumption',
@@ -2262,22 +2364,58 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function () {
         Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
       });
+    },
+    storePropertyCrewNumber: function storePropertyCrewNumber() {
+      axios.post('api/property', {
+        "property_name": 'crew_number',
+        "property_amount": this.newPropertyCrewNumber
+      }).then(function () {
+        Event.$emit('dbPropertyChanged');
+        $('#addPropertyCrewNumberModal').modal('hide');
+        Swal.fire({
+          position: 'center',
+          type: 'success',
+          title: 'Novi broj posade unešen u bazu',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })["catch"](function () {
+        Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+      });
+    },
+    storePropertyMaxSpeed: function storePropertyMaxSpeed() {
+      axios.post('api/property', {
+        "property_name": 'max_speed',
+        "property_amount": this.newPropertyMaxSpeed
+      }).then(function () {
+        Event.$emit('dbPropertyChanged');
+        $('#addPropertyMaxSpeedModal').modal('hide');
+        Swal.fire({
+          position: 'center',
+          type: 'success',
+          title: 'Nova brzina unešena u bazu',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })["catch"](function () {
+        Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+      });
     }
   },
   mounted: function mounted() {
-    var _this6 = this;
+    var _this7 = this;
 
     this.loadDestinatios();
     this.loadShips();
     this.loadProperties();
     Event.$on('dbChanged', function () {
-      _this6.loadDestinatios();
+      _this7.loadDestinatios();
     });
     Event.$on('dbShipChanged', function () {
-      _this6.loadShips();
+      _this7.loadShips();
     });
     Event.$on('dbPropertyChanged', function () {
-      _this6.loadProperties();
+      _this7.loadProperties();
     });
   }
 });
@@ -70183,7 +70321,7 @@ var render = function() {
                       staticClass: "btn btn-sm btn-success",
                       on: {
                         click: function($event) {
-                          return _vm.editShipModal(ship)
+                          return _vm.editShipModal(ship.id)
                         }
                       }
                     },
@@ -70694,7 +70832,7 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "div",
-                      { staticClass: "form-group" },
+                      { staticClass: "form-group input-group" },
                       [
                         _c(
                           "select",
@@ -70755,6 +70893,18 @@ var render = function() {
                           2
                         ),
                         _vm._v(" "),
+                        _c("div", { staticClass: "input-group-append" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-info",
+                              attrs: { type: "button" },
+                              on: { click: _vm.newPropertyCrewNumberModal }
+                            },
+                            [_vm._v("Dodaj posadu")]
+                          )
+                        ]),
+                        _vm._v(" "),
                         _c("has-error", {
                           attrs: {
                             form: _vm.shipForm,
@@ -70767,7 +70917,7 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "div",
-                      { staticClass: "form-group" },
+                      { staticClass: "form-group input-group" },
                       [
                         _c(
                           "select",
@@ -70825,6 +70975,18 @@ var render = function() {
                           ],
                           2
                         ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "input-group-append" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-info",
+                              attrs: { type: "button" },
+                              on: { click: _vm.newPropertyMaxSpeedModal }
+                            },
+                            [_vm._v("Dodaj brzinu")]
+                          )
+                        ]),
                         _vm._v(" "),
                         _c("has-error", {
                           attrs: {
@@ -70986,6 +71148,202 @@ var render = function() {
           ]
         )
       ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal hide fade",
+        attrs: {
+          id: "addPropertyCrewNumberModal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "addPropertyCrewNumberModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(5),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.storePropertyCrewNumber()
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.newPropertyCrewNumber,
+                            expression: "newPropertyCrewNumber"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "text",
+                          placeholder: "Unesite broj posade"
+                        },
+                        domProps: { value: _vm.newPropertyCrewNumber },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.newPropertyCrewNumber = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-secondary",
+                        attrs: { type: "button", "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Odustani")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: !_vm.editmode,
+                            expression: "!editmode"
+                          }
+                        ],
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Sačuvaj")]
+                    )
+                  ])
+                ]
+              )
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal hide fade",
+        attrs: {
+          id: "addPropertyMaxSpeedModal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "addPropertyMaxSpeedModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(6),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.storePropertyMaxSpeed()
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.newPropertyMaxSpeed,
+                            expression: "newPropertyMaxSpeed"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "text",
+                          placeholder: "Unesite max brzinu u čvorovima"
+                        },
+                        domProps: { value: _vm.newPropertyMaxSpeed },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.newPropertyMaxSpeed = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-secondary",
+                        attrs: { type: "button", "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Odustani")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: !_vm.editmode,
+                            expression: "!editmode"
+                          }
+                        ],
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Sačuvaj")]
+                    )
+                  ])
+                ]
+              )
+            ])
+          ]
+        )
+      ]
     )
   ])
 }
@@ -71069,7 +71427,55 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header" }, [
-      _c("h5", { staticClass: "modal-title" }, [_vm._v("Nova destinacija")]),
+      _c("h5", { staticClass: "modal-title" }, [
+        _vm._v("Dodaj novu potro[nju")
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [
+        _vm._v("Dodaj novi broj posade")
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [
+        _vm._v("Dodaj novu maksimalnu brzinu")
+      ]),
       _vm._v(" "),
       _c(
         "button",
