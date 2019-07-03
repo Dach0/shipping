@@ -35,7 +35,8 @@ class ExpenceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Expence::create($this->validate($request, ['expence_name' => 'required', 'expence_amount' => 'required' ]));
+        return (['Porukica' => 'Uspješno sačuvan trošak']);
     }
 
     /**
@@ -67,9 +68,10 @@ class ExpenceController extends Controller
      * @param  \App\Expence  $expence
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Expence $expence)
+    public function update(Request $request, $id)
     {
-        //
+        Expence::findOrFail($id)->update($this->validate($request, ['expence_name' => 'required', 'expence_amount' => 'required' ]));
+        return (['Porukica' => 'Uspješno izmijenjen trošak']);
     }
 
     /**
@@ -78,8 +80,10 @@ class ExpenceController extends Controller
      * @param  \App\Expence  $expence
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Expence $expence)
+    public function destroy($id)
     {
-        //
+        $expence = Expence::findOrFail($id);
+        $expence->delete();
+        return ['msg' => 'Obrisano, ćao pa pa'];
     }
 }

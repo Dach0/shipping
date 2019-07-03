@@ -41,7 +41,7 @@ class ShipController extends Controller
 
         $ship->properties()->attach([$request->selected_consumption, $request->selected_max_speed, $request->selected_crew_number]);
 
-        $ship->expences()->attach(1,1,1);
+        $ship->expences()->attach([1,2,3]);
 
         return ['message' => 'Kreiran brod'];
     }

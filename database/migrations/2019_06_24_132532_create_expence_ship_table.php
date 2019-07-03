@@ -18,8 +18,8 @@ class CreateExpenceShipTable extends Migration
             $table->bigInteger('ship_id')->unsigned();
             $table->bigInteger('expence_id')->unsigned();
 
-            $table->foreign('ship_id')->references('id')->on('ships');
-            $table->foreign('expence_id')->references('id')->on('expences');
+            $table->foreign('ship_id')->references('id')->on('ships')->onUpdate('cascade');
+            $table->foreign('expence_id')->references('id')->on('expences')->onUpdate('cascade');
         });
     }
 
