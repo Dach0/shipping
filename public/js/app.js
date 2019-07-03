@@ -2285,11 +2285,11 @@ __webpack_require__.r(__webpack_exports__);
     updateShip: function updateShip() {
       this.shipForm.put("api/ship/" + this.shipForm.id).then(function () {
         Event.$emit('dbShipChanged');
-        $('#addDestinationModal').modal('hide');
+        $('#addShipModal').modal('hide');
         Swal.fire({
           position: 'center',
           type: 'success',
-          title: 'Podaci o destinaciji izmijenjeni',
+          title: 'Podaci o brodu izmijenjeni',
           showConfirmButton: false,
           timer: 2000
         });
@@ -2422,9 +2422,9 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Expenses.vue?vue&type=script&lang=js&":
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Expences.vue?vue&type=script&lang=js&":
 /*!*******************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Expenses.vue?vue&type=script&lang=js& ***!
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Expences.vue?vue&type=script&lang=js& ***!
   \*******************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -2447,9 +2447,476 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      editmode: false,
+      editExpencemode: false,
+      ships: [],
+      destinations: [],
+      expences: [],
+      avg_paycheck: '',
+      fuel_price: '',
+      food_price: '',
+      form: new Form({
+        id: '',
+        expence_name: '',
+        expence_amount: ''
+      }),
+      shipForm: new Form({
+        id: '',
+        boat_name: '',
+        property_id: '',
+        selected_consumption: null,
+        selected_crew_number: null,
+        selected_max_speed: null
+      })
+    };
+  },
+  computed: {
+    // a computed getter
+    expenceAvgPaycheck: function expenceAvgPaycheck() {
+      return this.expences.filter(function (expence) {
+        return expence.expence_name == 'avg_paycheck';
+      });
+    },
+    expenceFuelPrice: function expenceFuelPrice() {
+      return this.expences.filter(function (expence) {
+        return expence.expence_name == 'fuel_price';
+      });
+    },
+    expenceFoodPrice: function expenceFoodPrice() {
+      return this.expences.filter(function (expence) {
+        return expence.expence_name == 'food_price';
+      });
+    }
+  },
+  methods: {
+    loadShips: function loadShips() {
+      var _this = this;
+
+      axios.get('api/ship/expences/all').then(function (_ref) {
+        var data = _ref.data;
+        return _this.ships = data;
+      });
+    },
+    loadExpences: function loadExpences() {
+      var _this2 = this;
+
+      axios.get('api/expence').then(function (_ref2) {
+        var data = _ref2.data;
+        return _this2.expences = data.data;
+      });
+    },
+    editExpenceModal: function editExpenceModal(exp) {
+      this.editExpencemode = true;
+      $('#addEditExpenceModal').modal('show');
+      this.form.fill(exp);
+    },
+    editShipModal: function editShipModal($id) {
+      var _this3 = this;
+
+      this.editShipmode = true;
+      $('#addShipModal').modal('show');
+      axios.get('api/ship/' + $id).then(function (_ref3) {
+        var data = _ref3.data;
+        return _this3.shipForm.id = data.boat_id, _this3.shipForm.boat_name = data.boat_name, _this3.shipForm.selected_consumption = data.consumption_id, _this3.shipForm.selected_crew_number = data.crew_number_id, _this3.shipForm.selected_max_speed = data.max_speed_id;
+      }); // this.shipForm.fill(ship);
+    },
+    deleteExpence: function deleteExpence(id) {
+      var _this4 = this;
+
+      Swal.fire({
+        title: 'Jeste li sigurni?',
+        text: "Nećete moći da opozovete akciju!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Da, obriši!'
+      }).then(function (result) {
+        if (result.value) {
+          _this4.form["delete"]('api/expence/' + id).then(function () {
+            Swal.fire('Obrisano!', 'Destinacija je obrisana', 'success');
+            Event.$emit('dbExpenceChanged');
+          })["catch"](function () {
+            Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+          });
+        }
+      });
+    },
+    deleteShip: function deleteShip(id) {
+      var _this5 = this;
+
+      Swal.fire({
+        title: 'Jeste li sigurni?',
+        text: "Nećete moći da opozovete akciju!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Da, obriši!'
+      }).then(function (result) {
+        if (result.value) {
+          _this5.shipForm["delete"]('api/ship/' + id).then(function () {
+            Swal.fire('Obrisano!', 'Brod je obrisan', 'success');
+            Event.$emit('dbShipChanged');
+          })["catch"](function () {
+            Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+          });
+        }
+      });
+    },
+    updateExpence: function updateExpence() {
+      this.form.put("api/expence/" + this.form.id).then(function () {
+        Event.$emit('dbExpenceChanged');
+        $('#addEditExpenceModal').modal('hide');
+        Swal.fire({
+          position: 'center',
+          type: 'success',
+          title: 'Podaci o trošku izmijenjeni',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      })["catch"](function () {
+        Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+      });
+    },
+    updateShip: function updateShip() {
+      this.shipForm.put("api/ship/" + this.shipForm.id).then(function () {
+        Event.$emit('dbShipChanged');
+        $('#addShipModal').modal('hide');
+        Swal.fire({
+          position: 'center',
+          type: 'success',
+          title: 'Podaci o brodu izmijenjeni',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      })["catch"](function () {
+        Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+      });
+    },
+    createExpence: function createExpence() {
+      this.form.post('api/expence').then(function () {
+        Event.$emit('dbExpenceChanged');
+        $('#addEditExpenceModal').modal('hide');
+        Swal.fire({
+          position: 'center',
+          type: 'success',
+          title: 'Trošak sačuvan u bazi podataka',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })["catch"](function () {
+        Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+      });
+    },
+    createShip: function createShip() {
+      this.shipForm.post('api/ship').then(function () {
+        Event.$emit('dbShipChanged');
+        $('#addShipModal').modal('hide');
+        Swal.fire({
+          position: 'center',
+          type: 'success',
+          title: 'Brod sačuvan u bazi podataka',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })["catch"](function () {
+        Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+      });
+    },
+    addExpenceModal: function addExpenceModal() {
+      this.editExpencemode = false;
+      this.form.reset();
+      $('#addEditExpenceModal').modal('show');
+    },
+    newShipModal: function newShipModal() {
+      this.editShipmode = false;
+      this.shipForm.reset();
+      $('#addShipModal').modal('show');
+    },
+    newPropertyConsumptionModal: function newPropertyConsumptionModal() {
+      // console.log('Hitting it');
+      $('#addPropertyConsumptionModal').modal('show');
+    },
+    newPropertyMaxSpeedModal: function newPropertyMaxSpeedModal() {
+      $('#addPropertyMaxSpeedModal').modal('show');
+    },
+    newPropertyCrewNumberModal: function newPropertyCrewNumberModal() {
+      $('#addPropertyCrewNumberModal').modal('show');
+    },
+    storePropertyConsumption: function storePropertyConsumption() {
+      axios.post('api/property', {
+        "property_name": 'consumption',
+        "property_amount": this.newPropertyConsumption
+      }).then(function () {
+        Event.$emit('dbPropertyChanged');
+        $('#addPropertyConsumptionModal').modal('hide');
+        Swal.fire({
+          position: 'center',
+          type: 'success',
+          title: 'Nova potrošnja unešena u bazu',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })["catch"](function () {
+        Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+      });
+    },
+    storePropertyCrewNumber: function storePropertyCrewNumber() {
+      axios.post('api/property', {
+        "property_name": 'crew_number',
+        "property_amount": this.newPropertyCrewNumber
+      }).then(function () {
+        Event.$emit('dbPropertyChanged');
+        $('#addPropertyCrewNumberModal').modal('hide');
+        Swal.fire({
+          position: 'center',
+          type: 'success',
+          title: 'Novi broj posade unešen u bazu',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })["catch"](function () {
+        Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+      });
+    },
+    storePropertyMaxSpeed: function storePropertyMaxSpeed() {
+      axios.post('api/property', {
+        "property_name": 'max_speed',
+        "property_amount": this.newPropertyMaxSpeed
+      }).then(function () {
+        Event.$emit('dbPropertyChanged');
+        $('#addPropertyMaxSpeedModal').modal('hide');
+        Swal.fire({
+          position: 'center',
+          type: 'success',
+          title: 'Nova brzina unešena u bazu',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })["catch"](function () {
+        Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+      });
+    }
+  },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    var _this6 = this;
+
+    this.loadShips();
+    this.loadExpences();
+    Event.$on('dbExpenceChanged', function () {
+      _this6.loadExpences();
+
+      _this6.loadShips();
+    });
+    Event.$on('dbShipChanged', function () {
+      _this6.loadShips();
+    });
   }
 });
 
@@ -71498,9 +71965,9 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Expenses.vue?vue&type=template&id=669e5306&":
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Expences.vue?vue&type=template&id=183a9ef6&":
 /*!***********************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Expenses.vue?vue&type=template&id=669e5306& ***!
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Expences.vue?vue&type=template&id=183a9ef6& ***!
   \***********************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -71513,28 +71980,1071 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _c("div", { staticClass: "col-12 mt-2 mb-3" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c("table", { staticClass: "table table-striped" }, [
+          _vm._m(1),
+          _vm._v(" "),
+          _c(
+            "tbody",
+            _vm._l(_vm.ships, function(ship) {
+              return _c("tr", { key: ship.id }, [
+                _c("td", [_vm._v(_vm._s(ship.boat_name))]),
+                _vm._v(" "),
+                _c("td", [
+                  _vm._v(_vm._s(ship.expences[0].expence_amount) + " €")
+                ]),
+                _vm._v(" "),
+                _c("td", [
+                  _vm._v(_vm._s(ship.expences[1].expence_amount) + " €/litru")
+                ]),
+                _vm._v(" "),
+                _c("td", [
+                  _vm._v(_vm._s(ship.expences[2].expence_amount) + " €/obroku")
+                ]),
+                _vm._v(" "),
+                _c("td", [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-sm btn-success",
+                      on: {
+                        click: function($event) {
+                          return _vm.editShipModal(ship.id)
+                        }
+                      }
+                    },
+                    [_vm._v("Izmijeni")]
+                  )
+                ])
+              ])
+            }),
+            0
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-12 mt-3" }, [
+        _c("div", { staticClass: "d-flex" }, [
+          _c("h4", { staticClass: " mr-auto" }, [_vm._v("Spisak troškova")]),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm btn-primary mb-2 mr-1",
+              on: { click: _vm.addExpenceModal }
+            },
+            [_vm._v("Dodaj trošak")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("table", { staticClass: "table table-striped" }, [
+          _vm._m(2),
+          _vm._v(" "),
+          _c(
+            "tbody",
+            _vm._l(_vm.expences, function(expence) {
+              return _c("tr", { key: expence.id }, [
+                _c("td", [_vm._v(_vm._s(expence.expence_name))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(expence.expence_amount))]),
+                _vm._v(" "),
+                _c("td", [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-sm btn-success",
+                      on: {
+                        click: function($event) {
+                          return _vm.editExpenceModal(expence)
+                        }
+                      }
+                    },
+                    [_vm._v("Izmijeni")]
+                  )
+                ])
+              ])
+            }),
+            0
+          )
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "addDestinationModal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "addDestinationModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c(
+                  "h5",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.editmode,
+                        expression: "editmode"
+                      }
+                    ],
+                    staticClass: "modal-title",
+                    attrs: { id: "addUserModalLabel" }
+                  },
+                  [_vm._v("Ažuriraj podatke o destinaciji")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "h5",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: !_vm.editmode,
+                        expression: "!editmode"
+                      }
+                    ],
+                    staticClass: "modal-title",
+                    attrs: { id: "addUserModalLabel" }
+                  },
+                  [_vm._v("Nova destinacija")]
+                ),
+                _vm._v(" "),
+                _vm._m(3)
+              ]),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      _vm.editmode
+                        ? _vm.updateDestination()
+                        : _vm.createDestination()
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.form.destination_name,
+                              expression: "form.destination_name"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.form.errors.has(
+                              "destination_name"
+                            )
+                          },
+                          attrs: {
+                            type: "text",
+                            name: "destination_name",
+                            placeholder: "Naziv destinacije"
+                          },
+                          domProps: { value: _vm.form.destination_name },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.form,
+                                "destination_name",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.form, field: "destination_name" }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.form.distance,
+                              expression: "form.distance"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.form.errors.has("distance")
+                          },
+                          attrs: {
+                            type: "text",
+                            name: "distance",
+                            placeholder: "Udaljenost"
+                          },
+                          domProps: { value: _vm.form.distance },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.form,
+                                "distance",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.form, field: "distance" }
+                        })
+                      ],
+                      1
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-secondary",
+                        attrs: { type: "button", "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Odustani")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.editmode,
+                            expression: "editmode"
+                          }
+                        ],
+                        staticClass: "btn btn-success",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Ažuriraj")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: !_vm.editmode,
+                            expression: "!editmode"
+                          }
+                        ],
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Sačuvaj")]
+                    )
+                  ])
+                ]
+              )
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal hide fade",
+        attrs: {
+          id: "addShipModal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "addDestinationModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c(
+                  "h5",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.editShipmode,
+                        expression: "editShipmode"
+                      }
+                    ],
+                    staticClass: "modal-title"
+                  },
+                  [_vm._v("Promijeni ime broda")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "h5",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: !_vm.editShipmode,
+                        expression: "!editShipmode"
+                      }
+                    ],
+                    staticClass: "modal-title"
+                  },
+                  [_vm._v("Novi brod")]
+                ),
+                _vm._v(" "),
+                _vm._m(4)
+              ]),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      _vm.editShipmode ? _vm.updateShip() : _vm.createShip()
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.shipForm.boat_name,
+                              expression: "shipForm.boat_name"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.shipForm.errors.has("boat_name")
+                          },
+                          attrs: {
+                            type: "text",
+                            name: "boat_name",
+                            placeholder: "Naziv broda"
+                          },
+                          domProps: { value: _vm.shipForm.boat_name },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.shipForm,
+                                "boat_name",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.shipForm, field: "boat_name" }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group input-group" },
+                      [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.shipForm.selected_consumption,
+                                expression: "shipForm.selected_consumption"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.shipForm.errors.has(
+                                "selected_consumption"
+                              )
+                            },
+                            attrs: { type: "text", name: "consumption" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.shipForm,
+                                  "selected_consumption",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { domProps: { value: null } }, [
+                              _vm._v("Izaberi potrošnju")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.propertyConsumption, function(
+                              consumption
+                            ) {
+                              return _c(
+                                "option",
+                                {
+                                  key: consumption.id,
+                                  domProps: { value: consumption.id }
+                                },
+                                [_vm._v(_vm._s(consumption.property_amount))]
+                              )
+                            })
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "input-group-append" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-info",
+                              attrs: { type: "button" },
+                              on: { click: _vm.newPropertyConsumptionModal }
+                            },
+                            [_vm._v("Dodaj potrošnju")]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: {
+                            form: _vm.shipForm,
+                            field: "selected_consumption"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group input-group" },
+                      [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.shipForm.selected_crew_number,
+                                expression: "shipForm.selected_crew_number"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.shipForm.errors.has(
+                                "selected_crew_number"
+                              )
+                            },
+                            attrs: { type: "text", name: "crew_number" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.shipForm,
+                                  "selected_crew_number",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "null" } }, [
+                              _vm._v("Izaberi broj članova posade")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.propertyCrewNumber, function(
+                              crew_number
+                            ) {
+                              return _c(
+                                "option",
+                                {
+                                  key: crew_number.id,
+                                  domProps: { value: crew_number.id }
+                                },
+                                [_vm._v(_vm._s(crew_number.property_amount))]
+                              )
+                            })
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "input-group-append" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-info",
+                              attrs: { type: "button" },
+                              on: { click: _vm.newPropertyCrewNumberModal }
+                            },
+                            [_vm._v("Dodaj posadu")]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: {
+                            form: _vm.shipForm,
+                            field: "selected_crew_number"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group input-group" },
+                      [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.shipForm.selected_max_speed,
+                                expression: "shipForm.selected_max_speed"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.shipForm.errors.has(
+                                "selected_max_speed"
+                              )
+                            },
+                            attrs: { type: "text", name: "max_speed" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.shipForm,
+                                  "selected_max_speed",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "null" } }, [
+                              _vm._v("Izaberi maksimalnu brzinu")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.propertyMaxSpeed, function(max_speed) {
+                              return _c(
+                                "option",
+                                {
+                                  key: max_speed.id,
+                                  domProps: { value: max_speed.id }
+                                },
+                                [_vm._v(_vm._s(max_speed.property_amount))]
+                              )
+                            })
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "input-group-append" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-info",
+                              attrs: { type: "button" },
+                              on: { click: _vm.newPropertyMaxSpeedModal }
+                            },
+                            [_vm._v("Dodaj brzinu")]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: {
+                            form: _vm.shipForm,
+                            field: "selected_max_speed"
+                          }
+                        })
+                      ],
+                      1
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-secondary",
+                        attrs: { type: "button", "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Odustani")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.editShipmode,
+                            expression: "editShipmode"
+                          }
+                        ],
+                        staticClass: "btn btn-success",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Ažuriraj")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: !_vm.editShipmode,
+                            expression: "!editShipmode"
+                          }
+                        ],
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Sačuvaj")]
+                    )
+                  ])
+                ]
+              )
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal hide fade",
+        attrs: {
+          id: "addEditExpenceModal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "addPropertyConsumptionModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c(
+                  "h5",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: !_vm.editExpencemode,
+                        expression: "!editExpencemode"
+                      }
+                    ],
+                    staticClass: "modal-title"
+                  },
+                  [_vm._v("Dodaj novu potrošnju")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "h5",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.editExpencemode,
+                        expression: "editExpencemode"
+                      }
+                    ],
+                    staticClass: "modal-title"
+                  },
+                  [_vm._v("Ažuriraj potrošnju")]
+                ),
+                _vm._v(" "),
+                _vm._m(5)
+              ]),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      _vm.editExpencemode
+                        ? _vm.updateExpence()
+                        : _vm.createExpence()
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c(
+                      "div",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: !_vm.editExpencemode,
+                            expression: "!editExpencemode"
+                          }
+                        ],
+                        staticClass: "form-group"
+                      },
+                      [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.expence_name,
+                                expression: "form.expence_name"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.form.errors.has("expence_name")
+                            },
+                            attrs: { type: "text", name: "expence_name" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.form,
+                                  "expence_name",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "" } }, [
+                              _vm._v("Izaberi vrstu troška")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "avg_paycheck" } }, [
+                              _vm._v("Prosječna plata")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "fuel_price" } }, [
+                              _vm._v("Cijena goriva")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "food_price" } }, [
+                              _vm._v("Cijena obroka")
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.form, field: "expence_name" }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.form.expence_amount,
+                              expression: "form.expence_amount"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.form.errors.has("expence_amount")
+                          },
+                          attrs: {
+                            type: "text",
+                            name: "expence_amount",
+                            placeholder: "Količina"
+                          },
+                          domProps: { value: _vm.form.expence_amount },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.form,
+                                "expence_amount",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.form, field: "expence_amount" }
+                        })
+                      ],
+                      1
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-secondary",
+                        attrs: { type: "button", "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Odustani")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: !_vm.editExpencemode,
+                            expression: "!editExpencemode"
+                          }
+                        ],
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Sačuvaj")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.editExpencemode,
+                            expression: "editExpencemode"
+                          }
+                        ],
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Ažuriraj")]
+                    )
+                  ])
+                ]
+              )
+            ])
+          ]
+        )
+      ]
+    )
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-md-8" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-header" }, [_vm._v("Troškovnik")]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                    Ovdje će biti troškovnici...ajajja\n                "
-              )
-            ])
-          ])
-        ])
+    return _c("div", { staticClass: "d-flex justify-content-between" }, [
+      _c("h4", [_vm._v("Spisak troškova po brodu")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Ime broda")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Prosječna plata")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Cijena goriva")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Cijena obroka")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Izmijeni")])
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Opis troška")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Vrijednost")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Izmijeni")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
   }
 ]
 render._withStripped = true
@@ -86422,8 +87932,8 @@ var routes = [{
   path: '/dashboard',
   component: __webpack_require__(/*! ./components/Dashboard.vue */ "./resources/js/components/Dashboard.vue")["default"]
 }, {
-  path: '/expenses',
-  component: __webpack_require__(/*! ./components/Expenses.vue */ "./resources/js/components/Expenses.vue")["default"]
+  path: '/expences',
+  component: __webpack_require__(/*! ./components/Expences.vue */ "./resources/js/components/Expences.vue")["default"]
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]({
   routes: routes // short for `routes: routes`
@@ -86585,17 +88095,17 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/Expenses.vue":
+/***/ "./resources/js/components/Expences.vue":
 /*!**********************************************!*\
-  !*** ./resources/js/components/Expenses.vue ***!
+  !*** ./resources/js/components/Expences.vue ***!
   \**********************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Expenses_vue_vue_type_template_id_669e5306___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Expenses.vue?vue&type=template&id=669e5306& */ "./resources/js/components/Expenses.vue?vue&type=template&id=669e5306&");
-/* harmony import */ var _Expenses_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Expenses.vue?vue&type=script&lang=js& */ "./resources/js/components/Expenses.vue?vue&type=script&lang=js&");
+/* harmony import */ var _Expences_vue_vue_type_template_id_183a9ef6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Expences.vue?vue&type=template&id=183a9ef6& */ "./resources/js/components/Expences.vue?vue&type=template&id=183a9ef6&");
+/* harmony import */ var _Expences_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Expences.vue?vue&type=script&lang=js& */ "./resources/js/components/Expences.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -86605,9 +88115,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _Expenses_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _Expenses_vue_vue_type_template_id_669e5306___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _Expenses_vue_vue_type_template_id_669e5306___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _Expences_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Expences_vue_vue_type_template_id_183a9ef6___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Expences_vue_vue_type_template_id_183a9ef6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -86617,38 +88127,38 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/Expenses.vue"
+component.options.__file = "resources/js/components/Expences.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/Expenses.vue?vue&type=script&lang=js&":
+/***/ "./resources/js/components/Expences.vue?vue&type=script&lang=js&":
 /*!***********************************************************************!*\
-  !*** ./resources/js/components/Expenses.vue?vue&type=script&lang=js& ***!
+  !*** ./resources/js/components/Expences.vue?vue&type=script&lang=js& ***!
   \***********************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Expenses_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./Expenses.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Expenses.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Expenses_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Expences_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./Expences.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Expences.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Expences_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/components/Expenses.vue?vue&type=template&id=669e5306&":
+/***/ "./resources/js/components/Expences.vue?vue&type=template&id=183a9ef6&":
 /*!*****************************************************************************!*\
-  !*** ./resources/js/components/Expenses.vue?vue&type=template&id=669e5306& ***!
+  !*** ./resources/js/components/Expences.vue?vue&type=template&id=183a9ef6& ***!
   \*****************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Expenses_vue_vue_type_template_id_669e5306___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./Expenses.vue?vue&type=template&id=669e5306& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Expenses.vue?vue&type=template&id=669e5306&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Expenses_vue_vue_type_template_id_669e5306___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Expences_vue_vue_type_template_id_183a9ef6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./Expences.vue?vue&type=template&id=183a9ef6& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Expences.vue?vue&type=template&id=183a9ef6&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Expences_vue_vue_type_template_id_183a9ef6___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Expenses_vue_vue_type_template_id_669e5306___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Expences_vue_vue_type_template_id_183a9ef6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

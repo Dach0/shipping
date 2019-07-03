@@ -3,31 +3,26 @@
         <div class="row justify-content-center">
              <div class="col-12 mt-2 mb-3">
                     <div class="d-flex justify-content-between">
-                        <h4>Spisak brodova</h4>  
-                        <button class="btn btn-sm btn-primary mb-2"  @click="newShipModal">Dodaj brod</button>
+                        <h4>Spisak troškova po brodu</h4>  
                     </div>
                     <table class="table table-striped">
                             <thead>
                                 <tr>
                                 <th scope="col">Ime broda</th>
-                                <th scope="col">Potrošnja</th>
-                                <th scope="col">Broj posade</th>
-                                <th scope="col">Maksimalna brzina</th>
+                                <th scope="col">Prosječna plata</th>
+                                <th scope="col">Cijena goriva</th>
+                                <th scope="col">Cijena obroka</th>
                                 <th scope="col">Izmijeni</th>
-                                <th scope="col">Uništi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr  v-for="ship in ships" :key="ship.id">
                                     <td>{{ ship.boat_name }}</td>
-                                    <td>{{ ship.properties[1].property_amount }} l/km</td>
-                                    <td>{{ ship.properties[2].property_amount }}</td>
-                                    <td>{{ ship.properties[0].property_amount }} čvorova</td>
+                                    <td>{{ ship.expences[0].expence_amount }} €</td>
+                                    <td>{{ ship.expences[1].expence_amount }} €/litru</td>
+                                    <td>{{ ship.expences[2].expence_amount }} €/obroku</td>
                                     <td>
                                         <button class="btn btn-sm btn-success" @click="editShipModal(ship.id)">Izmijeni</button>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger" @click="deleteShip(ship.id)">Obriši</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -35,32 +30,24 @@
              </div>
             
              <div class="col-12 mt-3">
-                 <div class="d-flex justify-content-between">
-                    <h4>Spisak destinacija</h4>  
-                    <button class="btn btn-sm btn-primary mb-2"  @click="newModal">Dodaj destinaciju</button>
+                 <div class="d-flex">
+                    <h4 class=" mr-auto">Spisak troškova</h4>  
+                    <button class="btn btn-sm btn-primary mb-2 mr-1"  @click="addExpenceModal">Dodaj trošak</button>
                  </div>
                    <table class="table table-striped">
                         <thead>
                             <tr>
-                            <th scope="col">Destinacija</th>
-                            <th scope="col">Udaljenost</th>
-                            <th scope="col">Napravljena</th>
-                            <th scope="col">Izmijenjena</th>
+                            <th scope="col">Opis troška</th>
+                            <th scope="col">Vrijednost</th>
                             <th scope="col">Izmijeni</th>
-                            <th scope="col">Uništi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="dist in destinations" :key="dist.id">
-                                <td>{{ dist.destination_name }}</td>
-                                <td>{{ dist.distance }}</td>
-                                <td>{{ dist.created_at }}</td>
-                                <td>{{ dist.updated_at }}</td>
+                            <tr v-for="expence in expences" :key="expence.id">
+                                <td>{{ expence.expence_name }}</td>
+                                <td>{{ expence.expence_amount }}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-success" @click="editDestinationModal(dist)">Izmijeni</button>
-                                </td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger" @click="deleteDestination(dist.id)">Obriši</button>
+                                    <button class="btn btn-sm btn-success" @click="editExpenceModal(expence)">Izmijeni</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -180,98 +167,51 @@
 </div>
 <!-- /SHIP MODAL -->
 
-<!-- AddPropertyConsumption MODAL -->
-<div class="modal hide fade" id="addPropertyConsumptionModal" tabindex="-1" role="dialog" aria-labelledby="addPropertyConsumptionModalLabel" aria-hidden="true">
+<!-- AddEditExpence MODAL -->
+<div class="modal hide fade" id="addEditExpenceModal" tabindex="-1" role="dialog" aria-labelledby="addPropertyConsumptionModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Dodaj novu potro[nju</h5>
+        <h5 v-show="!editExpencemode" class="modal-title">Dodaj novu potrošnju</h5>
+        <h5 v-show="editExpencemode" class="modal-title">Ažuriraj potrošnju</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
 
-        <form @submit.prevent="storePropertyConsumption()">
+        <form @submit.prevent="editExpencemode ? updateExpence() : createExpence()">
             <div class="modal-body">
 
+                 <div v-show="!editExpencemode" class="form-group">
+                        <select v-model="form.expence_name" type="text" name="expence_name"
+                            class="form-control" :class="{ 'is-invalid': form.errors.has('expence_name') }">
+                            <option value="">Izaberi vrstu troška</option>
+                            <option value="avg_paycheck">Prosječna plata</option>
+                            <option value="fuel_price">Cijena goriva</option>
+                            <option value="food_price">Cijena obroka</option>
+                        </select>
+                        <has-error :form="form" field="expence_name"></has-error>
+                    </div>
+
                 <div class="form-group">
-                    <input v-model="newPropertyConsumption" type="text" name="newPropertyConsumption" placeholder="Potrošnja l/km"
+                    <input v-model="form.expence_amount" type="text" name="expence_amount" :class="{ 'is-invalid': form.errors.has('expence_amount') }" placeholder="Količina"
                         class="form-control">
+                        <has-error :form="form" field="expence_amount"></has-error>
                 </div>
 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Odustani</button>
-        <button v-show="!editmode" type="submit" class="btn btn-primary">Sačuvaj</button>
+        <button v-show="!editExpencemode" type="submit" class="btn btn-primary">Sačuvaj</button>
+        <button v-show="editExpencemode" type="submit" class="btn btn-primary">Ažuriraj</button>
       </div>
 
       </form>
     </div>
   </div>
 </div>
-<!-- /AddPropertyConsumption MODAL -->
+<!-- /AddEditExpence MODAL -->
 
-<!-- AddPropertyCrewNumber MODAL -->
-<div class="modal hide fade" id="addPropertyCrewNumberModal" tabindex="-1" role="dialog" aria-labelledby="addPropertyCrewNumberModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Dodaj novi broj posade</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-
-        <form @submit.prevent="storePropertyCrewNumber()">
-            <div class="modal-body">
-
-                <div class="form-group">
-                    <input v-model="newPropertyCrewNumber" type="text" placeholder="Unesite broj posade"
-                        class="form-control">
-                </div>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Odustani</button>
-        <button v-show="!editmode" type="submit" class="btn btn-primary">Sačuvaj</button>
-      </div>
-
-      </form>
-    </div>
-  </div>
-</div>
-<!-- /AddPropertyCrewNumber MODAL -->
-
-<!-- AddPropertyMaxSpeed MODAL -->
-<div class="modal hide fade" id="addPropertyMaxSpeedModal" tabindex="-1" role="dialog" aria-labelledby="addPropertyMaxSpeedModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Dodaj novu maksimalnu brzinu</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-
-        <form @submit.prevent="storePropertyMaxSpeed()">
-            <div class="modal-body">
-
-                <div class="form-group">
-                    <input v-model="newPropertyMaxSpeed" type="text" placeholder="Unesite max brzinu u čvorovima"
-                        class="form-control">
-                </div>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Odustani</button>
-        <button v-show="!editmode" type="submit" class="btn btn-primary">Sačuvaj</button>
-      </div>
-
-      </form>
-    </div>
-  </div>
-</div>
-<!-- /AddPropertyMaxSpeed MODAL -->
 
     </div>
 </template>
@@ -281,17 +221,17 @@
         data() {
             return {
                 editmode : false,
-                editShipmode: false,
+                editExpencemode: false,
                 ships: [],
                 destinations: [],
-                properties: [],
-                newPropertyConsumption: '',
-                newPropertyCrewNumber: '',
-                newPropertyMaxSpeed: '',
+                expences: [],
+                avg_paycheck: '',
+                fuel_price: '',
+                food_price: '',
                 form: new Form({
                     id: '',
-                    destination_name : '',
-                    distance : ''
+                    expence_name : '',
+                    expence_amount : ''
                 }),
                 shipForm: new Form({
                     id:'',
@@ -305,31 +245,27 @@
         },
         computed: {
             // a computed getter
-            propertyConsumption: function () {
-                let properties = this.properties.filter(property => property.property_name == 'consumption');
-                return _.orderBy(properties, properties.property_amount)
+            expenceAvgPaycheck: function () {
+               return this.expences.filter(expence => expence.expence_name == 'avg_paycheck');
             },
-            propertyMaxSpeed: function () {
-                return this.properties.filter(property => property.property_name == 'max_speed')
+            expenceFuelPrice: function () {
+                return this.expences.filter(expence => expence.expence_name == 'fuel_price')
             },
-            propertyCrewNumber: function () {
-                return this.properties.filter(property => property.property_name == 'crew_number')
+            expenceFoodPrice: function () {
+                return this.expences.filter(expence => expence.expence_name == 'food_price')
             }
         },
         methods:{
             loadShips(){
-                axios.get('api/ship').then( ({data}) => (this.ships = data) );
+                axios.get('api/ship/expences/all').then( ({data}) => (this.ships = data) );
             },
-            loadDestinatios(){
-                axios.get('api/destination').then( ({data}) => (this.destinations = data) );
+            loadExpences(){
+                axios.get('api/expence').then(({data}) => (this.expences = data.data));
             },
-            loadProperties(){
-                axios.get('api/property').then(({data}) => (this.properties = data));
-            },
-            editDestinationModal(dist){
-                this.editmode = true;
-                $('#addDestinationModal').modal('show');
-                this.form.fill(dist);
+            editExpenceModal(exp){
+                this.editExpencemode = true;
+                $('#addEditExpenceModal').modal('show');
+                this.form.fill(exp);
             },
             editShipModal($id){
                 this.editShipmode = true;
@@ -343,7 +279,7 @@
                         this.shipForm.selected_max_speed = data.max_speed_id ));
                 // this.shipForm.fill(ship);
             },
-            deleteDestination(id){
+            deleteExpence(id){
                 Swal.fire({
                     title: 'Jeste li sigurni?',
                     text: "Nećete moći da opozovete akciju!",
@@ -355,14 +291,14 @@
                         }).then((result) => {
 
                         if (result.value) {
-                            this.form.delete('api/destination/'+id)
+                            this.form.delete('api/expence/'+id)
                             .then(()=> {
                                 Swal.fire(
                                 'Obrisano!',
                                 'Destinacija je obrisana',
                                 'success'
                                 )
-                            Event.$emit('dbChanged');
+                            Event.$emit('dbExpenceChanged');
                             })
                             .catch( () => {
                                 Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
@@ -397,17 +333,17 @@
                         }
                 })
             },
-            updateDestination(){
-                this.form.put("api/destination/"+this.form.id)
+            updateExpence(){
+                this.form.put("api/expence/"+this.form.id)
                 .then(() => {
-                    Event.$emit('dbChanged');
+                    Event.$emit('dbExpenceChanged');
                     
-                    $('#addDestinationModal').modal('hide');
+                    $('#addEditExpenceModal').modal('hide');
 
                     Swal.fire({
                         position: 'center',
                         type: 'success',
-                        title: 'Podaci o destinaciji izmijenjeni',
+                        title: 'Podaci o trošku izmijenjeni',
                         showConfirmButton: false,
                         timer: 2000
                         })
@@ -435,17 +371,17 @@
                      Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
                 });
             },
-            createDestination(){
-                this.form.post('api/destination')
+            createExpence(){
+                this.form.post('api/expence')
                 .then(() => { 
-                    Event.$emit('dbChanged');
+                    Event.$emit('dbExpenceChanged');
                     
-                    $('#addDestinationModal').modal('hide');
+                    $('#addEditExpenceModal').modal('hide');
 
                     Swal.fire({
                         position: 'center',
                         type: 'success',
-                        title: 'Destinacija sačuvana u bazi podataka',
+                        title: 'Trošak sačuvan u bazi podataka',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -475,10 +411,10 @@
                 })
 
             },
-            newModal(){
-              this.editmode = false;
+            addExpenceModal(){
+              this.editExpencemode = false;
               this.form.reset();
-              $('#addDestinationModal').modal('show');
+              $('#addEditExpenceModal').modal('show');
             },
             newShipModal(){
                 this.editShipmode = false;
@@ -563,21 +499,18 @@
             }
         },
         mounted() {
-            this.loadDestinatios();
             this.loadShips();
-            this.loadProperties();
+            this.loadExpences();
 
-            Event.$on('dbChanged', () => {
-                this.loadDestinatios()
+            Event.$on('dbExpenceChanged', () => {
+                this.loadExpences();
+                this.loadShips();
             });
 
             Event.$on('dbShipChanged', () => {
                 this.loadShips()
             });
 
-            Event.$on('dbPropertyChanged', () => {
-                this.loadProperties()
-            });
         }
     }
 </script>
