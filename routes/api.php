@@ -24,3 +24,4 @@ Route::resource('expence', 'ExpenceController');
 
 Route::get('ship/expence/{id}', 'ShipController@showExpence');
 Route::get('ship/expences/all', 'ShipController@shipsWithExpences');
+Route::put('ship/expences/update/{id}', 'ShipController@updateExpences');
