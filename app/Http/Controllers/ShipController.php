@@ -6,6 +6,7 @@ use App\Ship;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreShipRequest;
 use App\Http\Requests\UpdateShipRequest;
+use App\Http\Requests\UpdateShipExpencesRequest;
 
 class ShipController extends Controller
 {
@@ -107,6 +108,15 @@ class ShipController extends Controller
         $ship->properties()->attach([$request->selected_consumption, $request->selected_max_speed, $request->selected_crew_number]);
         $ship->update(['boat_name' => $request->boat_name]);
         return ['msg' => 'Azurirani podaci o brodu'];
+    }
+
+    public function updateExpences($id, UpdateShipExpencesRequest $request)
+    {
+        $ship = Ship::findOrFail($id);
+        $ship->expences()->detach();
+        $ship->expences()->attach([$request->avg_paycheck_id, $request->fuel_price_id, $request->food_price_id]);
+        $ship->update(['boat_name' => $request->boat_name]);
+        return ['msg' => 'Azurirani troškovi o brodu'];
     }
 
     /**

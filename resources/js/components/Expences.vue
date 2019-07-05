@@ -22,7 +22,7 @@
                                     <td>{{ ship.expences[1].expence_amount }} €/litru</td>
                                     <td>{{ ship.expences[2].expence_amount }} €/obroku</td>
                                     <td>
-                                        <button class="btn btn-sm btn-success" @click="editShipModal(ship.id)">Izmijeni</button>
+                                        <button class="btn btn-sm btn-success" @click="editShipModal(ship)">Izmijeni</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -56,60 +56,18 @@
         </div>
 
 
-      <!-- DESTINATION MODAL -->
-<div class="modal fade" id="addDestinationModal" tabindex="-1" role="dialog" aria-labelledby="addDestinationModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 v-show="editmode" class="modal-title" id="addUserModalLabel">Ažuriraj podatke o destinaciji</h5>
-        <h5 v-show="!editmode" class="modal-title" id="addUserModalLabel">Nova destinacija</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-
-        <form @submit.prevent="editmode ? updateDestination() : createDestination()">
-            <div class="modal-body">
-
-                <div class="form-group">
-                    <input v-model="form.destination_name" type="text" name="destination_name" placeholder="Naziv destinacije"
-                        class="form-control" :class="{ 'is-invalid': form.errors.has('destination_name') }">
-                    <has-error :form="form" field="destination_name"></has-error>
-                </div>
-
-        <div class="form-group">
-            <input v-model="form.distance" type="text" name="distance" placeholder="Udaljenost"
-                class="form-control" :class="{ 'is-invalid': form.errors.has('distance') }">
-            <has-error :form="form" field="distance"></has-error>
-        </div>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Odustani</button>
-        <button v-show="editmode" type="submit" class="btn btn-success">Ažuriraj</button>
-        <button v-show="!editmode" type="submit" class="btn btn-primary">Sačuvaj</button>
-      </div>
-
-      </form>
-    </div>
-  </div>
-</div>
-<!-- /MODAL -->
-
-
       <!-- SHIP MODAL -->
-<div class="modal hide fade" id="addShipModal" tabindex="-1" role="dialog" aria-labelledby="addDestinationModalLabel" aria-hidden="true">
+<div class="modal hide fade" id="editShipModal" tabindex="-1" role="dialog" aria-labelledby="editShipModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 v-show="editShipmode" class="modal-title">Promijeni ime broda</h5>
-        <h5 v-show="!editShipmode" class="modal-title">Novi brod</h5>
+        <h5 class="modal-title">Promijeni podatke o troškovima broda</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
 
-        <form @submit.prevent="editShipmode ? updateShip() : createShip()">
+        <form @submit.prevent="updateShipExpences()">
             <div class="modal-body">
 
                 <div class="form-group">
@@ -119,46 +77,39 @@
                 </div>
 
                                    
-                    <div class="form-group input-group">
-                        <select v-model="shipForm.selected_consumption" type="text" name="consumption"
-                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('selected_consumption') }">
-                            <option :value="null">Izaberi potrošnju</option>
-                            <option v-for="consumption in propertyConsumption" v-bind:key="consumption.id" :value="consumption.id">{{consumption.property_amount}}</option>
+                    <div class="form-group">
+                        <label for="paycheck">Prosječna plata</label>
+                        <select v-model="shipForm.avg_paycheck_id" type="text" name="paycheck"
+                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('avg_paycheck_id') }">
+                            <option value="">Izaberi troškove prosječne plate</option>
+                            <option v-for="paycheck in expenceAvgPaycheck" v-bind:key="paycheck.id" :value="paycheck.id">{{paycheck.expence_amount}}</option>
                         </select>
-                        <div class="input-group-append">
-                            <button class="btn btn-info" type="button" @click="newPropertyConsumptionModal">Dodaj potrošnju</button>
-                        </div>
-                        <has-error :form="shipForm" field="selected_consumption"></has-error>
+                        <has-error :form="shipForm" field="avg_paycheck_id"></has-error>
                     </div>
-                    <div class="form-group input-group">
-                        <select v-model="shipForm.selected_crew_number" type="text" name="crew_number"
-                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('selected_crew_number') }">
-                            <option value="null">Izaberi broj članova posade</option>
-                            <option v-for="crew_number in propertyCrewNumber" :key="crew_number.id" :value="crew_number.id">{{crew_number.property_amount}}</option>
+                    <div class="form-group">
+                        <label for="fuel_id">Prosječna cijena goriva</label>
+                        <select v-model="shipForm.fuel_price_id" type="text" name="fuel_id"
+                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('fuel_price_id') }">
+                            <option value="">Izaberi troškove goriva</option>
+                            <option v-for="fuel in expenceFuelPrice" :key="fuel.id" :value="fuel.id">{{fuel.expence_amount}}</option>
                         </select>
-                         <div class="input-group-append">
-                            <button class="btn btn-info" type="button" @click="newPropertyCrewNumberModal">Dodaj posadu</button>
-                        </div>
-                        <has-error :form="shipForm" field="selected_crew_number"></has-error>
+                        <has-error :form="shipForm" field="fuel_price_id"></has-error>
                     </div>
-                    <div class="form-group input-group">
-                        <select v-model="shipForm.selected_max_speed" type="text" name="max_speed"
-                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('selected_max_speed') }">
-                            <option value="null">Izaberi maksimalnu brzinu</option>
-                            <option v-for="max_speed in propertyMaxSpeed" :key="max_speed.id" :value="max_speed.id">{{ max_speed.property_amount }}</option>
+                    <div class="form-group">
+                        <label for="paycheck">Prosječna cijena obroka po članu posade</label>
+                        <select v-model="shipForm.food_price_id" type="text" name="food_price"
+                            class="form-control" :class="{ 'is-invalid': shipForm.errors.has('food_price_id') }">
+                            <option value="">Izaberi troškove obroka</option>
+                            <option v-for="food in expenceFoodPrice" :key="food.id" :value="food.id">{{ food.expence_amount }}</option>
                         </select>
-                         <div class="input-group-append">
-                            <button class="btn btn-info" type="button" @click="newPropertyMaxSpeedModal">Dodaj brzinu</button>
-                        </div>
-                        <has-error :form="shipForm" field="selected_max_speed"></has-error>
+                        <has-error :form="shipForm" field="food_price_id"></has-error>
                     </div>
 
              </div>
 
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Odustani</button>
-            <button v-show="editShipmode" type="submit" class="btn btn-success">Ažuriraj</button>
-            <button v-show="!editShipmode" type="submit" class="btn btn-primary">Sačuvaj</button>
+            <button type="submit" class="btn btn-success">Ažuriraj</button>
         </div>
 
       </form>
@@ -223,7 +174,6 @@
                 editmode : false,
                 editExpencemode: false,
                 ships: [],
-                destinations: [],
                 expences: [],
                 avg_paycheck: '',
                 fuel_price: '',
@@ -236,10 +186,9 @@
                 shipForm: new Form({
                     id:'',
                     boat_name:'',
-                    property_id:'',
-                    selected_consumption: null,
-                    selected_crew_number: null,
-                    selected_max_speed: null,
+                    avg_paycheck_id: '',
+                    fuel_price_id: '',
+                    food_price_id: '',
                 })
             }
         },
@@ -256,82 +205,25 @@
             }
         },
         methods:{
-            loadShips(){
+            loadExpencesShips(){
                 axios.get('api/ship/expences/all').then( ({data}) => (this.ships = data) );
             },
             loadExpences(){
-                axios.get('api/expence').then(({data}) => (this.expences = data.data));
+                axios.get('api/expence').then(({data}) => (this.expences = data));
             },
             editExpenceModal(exp){
                 this.editExpencemode = true;
                 $('#addEditExpenceModal').modal('show');
                 this.form.fill(exp);
             },
-            editShipModal($id){
-                this.editShipmode = true;
-                $('#addShipModal').modal('show');
-                axios.get('api/ship/'+$id)
-                    .then(({data}) => (
-                        this.shipForm.id = data.boat_id,
-                        this.shipForm.boat_name = data.boat_name,
-                        this.shipForm.selected_consumption = data.consumption_id,
-                        this.shipForm.selected_crew_number = data.crew_number_id,
-                        this.shipForm.selected_max_speed = data.max_speed_id ));
+            editShipModal(ship){
+                $('#editShipModal').modal('show');
+                    this.shipForm.id = ship.id;
+                    this.shipForm.boat_name = ship.boat_name;
+                    this.shipForm.avg_paycheck_id =  ship.expences[0].id;
+                    this.shipForm.fuel_price_id = ship.expences[1].id;
+                    this.shipForm.food_price_id = ship.expences[2].id;
                 // this.shipForm.fill(ship);
-            },
-            deleteExpence(id){
-                Swal.fire({
-                    title: 'Jeste li sigurni?',
-                    text: "Nećete moći da opozovete akciju!",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Da, obriši!'
-                        }).then((result) => {
-
-                        if (result.value) {
-                            this.form.delete('api/expence/'+id)
-                            .then(()=> {
-                                Swal.fire(
-                                'Obrisano!',
-                                'Destinacija je obrisana',
-                                'success'
-                                )
-                            Event.$emit('dbExpenceChanged');
-                            })
-                            .catch( () => {
-                                Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
-                            });
-                        }
-                })
-            },
-            deleteShip(id){
-                Swal.fire({
-                    title: 'Jeste li sigurni?',
-                    text: "Nećete moći da opozovete akciju!",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Da, obriši!'
-                        }).then((result) => {
-
-                        if (result.value) {
-                            this.shipForm.delete('api/ship/'+id)
-                            .then(()=> {
-                                Swal.fire(
-                                'Obrisano!',
-                                'Brod je obrisan',
-                                'success'
-                                )
-                            Event.$emit('dbShipChanged');
-                            })
-                            .catch( () => {
-                                Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
-                            });
-                        }
-                })
             },
             updateExpence(){
                 this.form.put("api/expence/"+this.form.id)
@@ -352,12 +244,12 @@
                      Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
                 });
             },
-            updateShip(){
-                this.shipForm.put("api/ship/"+this.shipForm.id)
+            updateShipExpences(){
+                this.shipForm.put("api/ship/expences/update/"+this.shipForm.id)
                 .then(() => {
                     Event.$emit('dbShipChanged');
                     
-                    $('#addShipModal').modal('hide');
+                    $('#editShipModal').modal('hide');
 
                     Swal.fire({
                         position: 'center',
@@ -415,11 +307,6 @@
               this.editExpencemode = false;
               this.form.reset();
               $('#addEditExpenceModal').modal('show');
-            },
-            newShipModal(){
-                this.editShipmode = false;
-                this.shipForm.reset();
-                $('#addShipModal').modal('show');
             },
             newPropertyConsumptionModal(){
                 // console.log('Hitting it');
@@ -499,16 +386,16 @@
             }
         },
         mounted() {
-            this.loadShips();
+            this.loadExpencesShips();
             this.loadExpences();
 
             Event.$on('dbExpenceChanged', () => {
                 this.loadExpences();
-                this.loadShips();
+                this.loadExpencesShips();
             });
 
             Event.$on('dbShipChanged', () => {
-                this.loadShips()
+                this.loadExpencesShips()
             });
 
         }

@@ -34,8 +34,10 @@
                     <!-- Left Side Of Navbar -->
                     @auth
                         <ul class="navbar-nav mr-auto">
+                                <li class="mr-1"><router-link to="/">Welcome</router-link></li>
                                 <li class="mr-1"><router-link to="/dashboard">Dashboard</router-link></li>
-                                <li><router-link to="/expences">Expences</router-link></li>
+                                <li class="mr-1"><router-link to="/expences">Expences</router-link></li>
+                                <li><router-link to="/orders">Orders</router-link></li>
                         </ul>    
                     @endauth
 

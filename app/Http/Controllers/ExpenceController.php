@@ -14,7 +14,7 @@ class ExpenceController extends Controller
      */
     public function index()
     {
-        return Expence::orderBy('expence_name')->orderBy('expence_amount', 'desc')->paginate(10);
+        return Expence::orderBy('expence_name')->orderBy('expence_amount', 'desc')->get();
     }
 
     /**

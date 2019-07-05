@@ -2600,62 +2600,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       editmode: false,
       editExpencemode: false,
       ships: [],
-      destinations: [],
       expences: [],
       avg_paycheck: '',
       fuel_price: '',
@@ -2668,10 +2618,9 @@ __webpack_require__.r(__webpack_exports__);
       shipForm: new Form({
         id: '',
         boat_name: '',
-        property_id: '',
-        selected_consumption: null,
-        selected_crew_number: null,
-        selected_max_speed: null
+        avg_paycheck_id: '',
+        fuel_price_id: '',
+        food_price_id: ''
       })
     };
   },
@@ -2694,7 +2643,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    loadShips: function loadShips() {
+    loadExpencesShips: function loadExpencesShips() {
       var _this = this;
 
       axios.get('api/ship/expences/all').then(function (_ref) {
@@ -2707,7 +2656,7 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('api/expence').then(function (_ref2) {
         var data = _ref2.data;
-        return _this2.expences = data.data;
+        return _this2.expences = data;
       });
     },
     editExpenceModal: function editExpenceModal(exp) {
@@ -2715,59 +2664,13 @@ __webpack_require__.r(__webpack_exports__);
       $('#addEditExpenceModal').modal('show');
       this.form.fill(exp);
     },
-    editShipModal: function editShipModal($id) {
-      var _this3 = this;
-
-      this.editShipmode = true;
-      $('#addShipModal').modal('show');
-      axios.get('api/ship/' + $id).then(function (_ref3) {
-        var data = _ref3.data;
-        return _this3.shipForm.id = data.boat_id, _this3.shipForm.boat_name = data.boat_name, _this3.shipForm.selected_consumption = data.consumption_id, _this3.shipForm.selected_crew_number = data.crew_number_id, _this3.shipForm.selected_max_speed = data.max_speed_id;
-      }); // this.shipForm.fill(ship);
-    },
-    deleteExpence: function deleteExpence(id) {
-      var _this4 = this;
-
-      Swal.fire({
-        title: 'Jeste li sigurni?',
-        text: "Nećete moći da opozovete akciju!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Da, obriši!'
-      }).then(function (result) {
-        if (result.value) {
-          _this4.form["delete"]('api/expence/' + id).then(function () {
-            Swal.fire('Obrisano!', 'Destinacija je obrisana', 'success');
-            Event.$emit('dbExpenceChanged');
-          })["catch"](function () {
-            Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
-          });
-        }
-      });
-    },
-    deleteShip: function deleteShip(id) {
-      var _this5 = this;
-
-      Swal.fire({
-        title: 'Jeste li sigurni?',
-        text: "Nećete moći da opozovete akciju!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Da, obriši!'
-      }).then(function (result) {
-        if (result.value) {
-          _this5.shipForm["delete"]('api/ship/' + id).then(function () {
-            Swal.fire('Obrisano!', 'Brod je obrisan', 'success');
-            Event.$emit('dbShipChanged');
-          })["catch"](function () {
-            Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
-          });
-        }
-      });
+    editShipModal: function editShipModal(ship) {
+      $('#editShipModal').modal('show');
+      this.shipForm.id = ship.id;
+      this.shipForm.boat_name = ship.boat_name;
+      this.shipForm.avg_paycheck_id = ship.expences[0].id;
+      this.shipForm.fuel_price_id = ship.expences[1].id;
+      this.shipForm.food_price_id = ship.expences[2].id; // this.shipForm.fill(ship);
     },
     updateExpence: function updateExpence() {
       this.form.put("api/expence/" + this.form.id).then(function () {
@@ -2784,10 +2687,10 @@ __webpack_require__.r(__webpack_exports__);
         Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
       });
     },
-    updateShip: function updateShip() {
-      this.shipForm.put("api/ship/" + this.shipForm.id).then(function () {
+    updateShipExpences: function updateShipExpences() {
+      this.shipForm.put("api/ship/expences/update/" + this.shipForm.id).then(function () {
         Event.$emit('dbShipChanged');
-        $('#addShipModal').modal('hide');
+        $('#editShipModal').modal('hide');
         Swal.fire({
           position: 'center',
           type: 'success',
@@ -2833,11 +2736,6 @@ __webpack_require__.r(__webpack_exports__);
       this.editExpencemode = false;
       this.form.reset();
       $('#addEditExpenceModal').modal('show');
-    },
-    newShipModal: function newShipModal() {
-      this.editShipmode = false;
-      this.shipForm.reset();
-      $('#addShipModal').modal('show');
     },
     newPropertyConsumptionModal: function newPropertyConsumptionModal() {
       // console.log('Hitting it');
@@ -2905,20 +2803,199 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    var _this6 = this;
+    var _this3 = this;
 
-    this.loadShips();
+    this.loadExpencesShips();
     this.loadExpences();
     Event.$on('dbExpenceChanged', function () {
-      _this6.loadExpences();
+      _this3.loadExpences();
 
-      _this6.loadShips();
+      _this3.loadExpencesShips();
     });
     Event.$on('dbShipChanged', function () {
-      _this6.loadShips();
+      _this3.loadExpencesShips();
     });
   }
 });
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Order.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Order.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      orders: [],
+      destinations: [],
+      ships: [],
+      orderForm: new Form({
+        order_name: '',
+        destination_id: null,
+        ship_id: null,
+        price: ''
+      })
+    };
+  },
+  methods: {
+    loadOrders: function loadOrders() {
+      var _this = this;
+
+      axios.get('api/order').then(function (_ref) {
+        var data = _ref.data;
+        return _this.orders = data;
+      });
+    },
+    loadShips: function loadShips() {
+      var _this2 = this;
+
+      axios.get('api/ship').then(function (_ref2) {
+        var data = _ref2.data;
+        return _this2.ships = data;
+      });
+    },
+    loadDestinatios: function loadDestinatios() {
+      var _this3 = this;
+
+      axios.get('api/destination').then(function (_ref3) {
+        var data = _ref3.data;
+        return _this3.destinations = data;
+      });
+    },
+    newOrderModal: function newOrderModal() {
+      this.orderForm.reset();
+      $('#newOrderModal').modal('show');
+    },
+    calculatePrice: function calculatePrice(destination_id, ship_id) {
+      console.log(destination_id + ' ' + ship_id);
+    }
+  },
+  created: function created() {
+    this.loadOrders();
+    this.loadDestinatios();
+    this.loadShips();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Welcome.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Welcome.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
 
@@ -72013,7 +72090,7 @@ var render = function() {
                       staticClass: "btn btn-sm btn-success",
                       on: {
                         click: function($event) {
-                          return _vm.editShipModal(ship.id)
+                          return _vm.editShipModal(ship)
                         }
                       }
                     },
@@ -72077,228 +72154,12 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
-        attrs: {
-          id: "addDestinationModal",
-          tabindex: "-1",
-          role: "dialog",
-          "aria-labelledby": "addDestinationModalLabel",
-          "aria-hidden": "true"
-        }
-      },
-      [
-        _c(
-          "div",
-          {
-            staticClass: "modal-dialog modal-dialog-centered",
-            attrs: { role: "document" }
-          },
-          [
-            _c("div", { staticClass: "modal-content" }, [
-              _c("div", { staticClass: "modal-header" }, [
-                _c(
-                  "h5",
-                  {
-                    directives: [
-                      {
-                        name: "show",
-                        rawName: "v-show",
-                        value: _vm.editmode,
-                        expression: "editmode"
-                      }
-                    ],
-                    staticClass: "modal-title",
-                    attrs: { id: "addUserModalLabel" }
-                  },
-                  [_vm._v("Ažuriraj podatke o destinaciji")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "h5",
-                  {
-                    directives: [
-                      {
-                        name: "show",
-                        rawName: "v-show",
-                        value: !_vm.editmode,
-                        expression: "!editmode"
-                      }
-                    ],
-                    staticClass: "modal-title",
-                    attrs: { id: "addUserModalLabel" }
-                  },
-                  [_vm._v("Nova destinacija")]
-                ),
-                _vm._v(" "),
-                _vm._m(3)
-              ]),
-              _vm._v(" "),
-              _c(
-                "form",
-                {
-                  on: {
-                    submit: function($event) {
-                      $event.preventDefault()
-                      _vm.editmode
-                        ? _vm.updateDestination()
-                        : _vm.createDestination()
-                    }
-                  }
-                },
-                [
-                  _c("div", { staticClass: "modal-body" }, [
-                    _c(
-                      "div",
-                      { staticClass: "form-group" },
-                      [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.form.destination_name,
-                              expression: "form.destination_name"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          class: {
-                            "is-invalid": _vm.form.errors.has(
-                              "destination_name"
-                            )
-                          },
-                          attrs: {
-                            type: "text",
-                            name: "destination_name",
-                            placeholder: "Naziv destinacije"
-                          },
-                          domProps: { value: _vm.form.destination_name },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.$set(
-                                _vm.form,
-                                "destination_name",
-                                $event.target.value
-                              )
-                            }
-                          }
-                        }),
-                        _vm._v(" "),
-                        _c("has-error", {
-                          attrs: { form: _vm.form, field: "destination_name" }
-                        })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "form-group" },
-                      [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.form.distance,
-                              expression: "form.distance"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          class: {
-                            "is-invalid": _vm.form.errors.has("distance")
-                          },
-                          attrs: {
-                            type: "text",
-                            name: "distance",
-                            placeholder: "Udaljenost"
-                          },
-                          domProps: { value: _vm.form.distance },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.$set(
-                                _vm.form,
-                                "distance",
-                                $event.target.value
-                              )
-                            }
-                          }
-                        }),
-                        _vm._v(" "),
-                        _c("has-error", {
-                          attrs: { form: _vm.form, field: "distance" }
-                        })
-                      ],
-                      1
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "modal-footer" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-secondary",
-                        attrs: { type: "button", "data-dismiss": "modal" }
-                      },
-                      [_vm._v("Odustani")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        directives: [
-                          {
-                            name: "show",
-                            rawName: "v-show",
-                            value: _vm.editmode,
-                            expression: "editmode"
-                          }
-                        ],
-                        staticClass: "btn btn-success",
-                        attrs: { type: "submit" }
-                      },
-                      [_vm._v("Ažuriraj")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        directives: [
-                          {
-                            name: "show",
-                            rawName: "v-show",
-                            value: !_vm.editmode,
-                            expression: "!editmode"
-                          }
-                        ],
-                        staticClass: "btn btn-primary",
-                        attrs: { type: "submit" }
-                      },
-                      [_vm._v("Sačuvaj")]
-                    )
-                  ])
-                ]
-              )
-            ])
-          ]
-        )
-      ]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
         staticClass: "modal hide fade",
         attrs: {
-          id: "addShipModal",
+          id: "editShipModal",
           tabindex: "-1",
           role: "dialog",
-          "aria-labelledby": "addDestinationModalLabel",
+          "aria-labelledby": "editShipModalLabel",
           "aria-hidden": "true"
         }
       },
@@ -72311,41 +72172,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _c("div", { staticClass: "modal-header" }, [
-                _c(
-                  "h5",
-                  {
-                    directives: [
-                      {
-                        name: "show",
-                        rawName: "v-show",
-                        value: _vm.editShipmode,
-                        expression: "editShipmode"
-                      }
-                    ],
-                    staticClass: "modal-title"
-                  },
-                  [_vm._v("Promijeni ime broda")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "h5",
-                  {
-                    directives: [
-                      {
-                        name: "show",
-                        rawName: "v-show",
-                        value: !_vm.editShipmode,
-                        expression: "!editShipmode"
-                      }
-                    ],
-                    staticClass: "modal-title"
-                  },
-                  [_vm._v("Novi brod")]
-                ),
-                _vm._v(" "),
-                _vm._m(4)
-              ]),
+              _vm._m(3),
               _vm._v(" "),
               _c(
                 "form",
@@ -72353,7 +72180,7 @@ var render = function() {
                   on: {
                     submit: function($event) {
                       $event.preventDefault()
-                      _vm.editShipmode ? _vm.updateShip() : _vm.createShip()
+                      return _vm.updateShipExpences()
                     }
                   }
                 },
@@ -72405,8 +72232,12 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "div",
-                      { staticClass: "form-group input-group" },
+                      { staticClass: "form-group" },
                       [
+                        _c("label", { attrs: { for: "paycheck" } }, [
+                          _vm._v("Prosječna plata")
+                        ]),
+                        _vm._v(" "),
                         _c(
                           "select",
                           {
@@ -72414,17 +72245,17 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.shipForm.selected_consumption,
-                                expression: "shipForm.selected_consumption"
+                                value: _vm.shipForm.avg_paycheck_id,
+                                expression: "shipForm.avg_paycheck_id"
                               }
                             ],
                             staticClass: "form-control",
                             class: {
                               "is-invalid": _vm.shipForm.errors.has(
-                                "selected_consumption"
+                                "avg_paycheck_id"
                               )
                             },
-                            attrs: { type: "text", name: "consumption" },
+                            attrs: { type: "text", name: "paycheck" },
                             on: {
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
@@ -72437,7 +72268,7 @@ var render = function() {
                                   })
                                 _vm.$set(
                                   _vm.shipForm,
-                                  "selected_consumption",
+                                  "avg_paycheck_id",
                                   $event.target.multiple
                                     ? $$selectedVal
                                     : $$selectedVal[0]
@@ -72446,42 +72277,28 @@ var render = function() {
                             }
                           },
                           [
-                            _c("option", { domProps: { value: null } }, [
-                              _vm._v("Izaberi potrošnju")
+                            _c("option", { attrs: { value: "" } }, [
+                              _vm._v("Izaberi troškove prosječne plate")
                             ]),
                             _vm._v(" "),
-                            _vm._l(_vm.propertyConsumption, function(
-                              consumption
-                            ) {
+                            _vm._l(_vm.expenceAvgPaycheck, function(paycheck) {
                               return _c(
                                 "option",
                                 {
-                                  key: consumption.id,
-                                  domProps: { value: consumption.id }
+                                  key: paycheck.id,
+                                  domProps: { value: paycheck.id }
                                 },
-                                [_vm._v(_vm._s(consumption.property_amount))]
+                                [_vm._v(_vm._s(paycheck.expence_amount))]
                               )
                             })
                           ],
                           2
                         ),
                         _vm._v(" "),
-                        _c("div", { staticClass: "input-group-append" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-info",
-                              attrs: { type: "button" },
-                              on: { click: _vm.newPropertyConsumptionModal }
-                            },
-                            [_vm._v("Dodaj potrošnju")]
-                          )
-                        ]),
-                        _vm._v(" "),
                         _c("has-error", {
                           attrs: {
                             form: _vm.shipForm,
-                            field: "selected_consumption"
+                            field: "avg_paycheck_id"
                           }
                         })
                       ],
@@ -72490,8 +72307,12 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "div",
-                      { staticClass: "form-group input-group" },
+                      { staticClass: "form-group" },
                       [
+                        _c("label", { attrs: { for: "fuel_id" } }, [
+                          _vm._v("Prosječna cijena goriva")
+                        ]),
+                        _vm._v(" "),
                         _c(
                           "select",
                           {
@@ -72499,17 +72320,17 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.shipForm.selected_crew_number,
-                                expression: "shipForm.selected_crew_number"
+                                value: _vm.shipForm.fuel_price_id,
+                                expression: "shipForm.fuel_price_id"
                               }
                             ],
                             staticClass: "form-control",
                             class: {
                               "is-invalid": _vm.shipForm.errors.has(
-                                "selected_crew_number"
+                                "fuel_price_id"
                               )
                             },
-                            attrs: { type: "text", name: "crew_number" },
+                            attrs: { type: "text", name: "fuel_id" },
                             on: {
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
@@ -72522,7 +72343,7 @@ var render = function() {
                                   })
                                 _vm.$set(
                                   _vm.shipForm,
-                                  "selected_crew_number",
+                                  "fuel_price_id",
                                   $event.target.multiple
                                     ? $$selectedVal
                                     : $$selectedVal[0]
@@ -72531,43 +72352,23 @@ var render = function() {
                             }
                           },
                           [
-                            _c("option", { attrs: { value: "null" } }, [
-                              _vm._v("Izaberi broj članova posade")
+                            _c("option", { attrs: { value: "" } }, [
+                              _vm._v("Izaberi troškove goriva")
                             ]),
                             _vm._v(" "),
-                            _vm._l(_vm.propertyCrewNumber, function(
-                              crew_number
-                            ) {
+                            _vm._l(_vm.expenceFuelPrice, function(fuel) {
                               return _c(
                                 "option",
-                                {
-                                  key: crew_number.id,
-                                  domProps: { value: crew_number.id }
-                                },
-                                [_vm._v(_vm._s(crew_number.property_amount))]
+                                { key: fuel.id, domProps: { value: fuel.id } },
+                                [_vm._v(_vm._s(fuel.expence_amount))]
                               )
                             })
                           ],
                           2
                         ),
                         _vm._v(" "),
-                        _c("div", { staticClass: "input-group-append" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-info",
-                              attrs: { type: "button" },
-                              on: { click: _vm.newPropertyCrewNumberModal }
-                            },
-                            [_vm._v("Dodaj posadu")]
-                          )
-                        ]),
-                        _vm._v(" "),
                         _c("has-error", {
-                          attrs: {
-                            form: _vm.shipForm,
-                            field: "selected_crew_number"
-                          }
+                          attrs: { form: _vm.shipForm, field: "fuel_price_id" }
                         })
                       ],
                       1
@@ -72575,8 +72376,12 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "div",
-                      { staticClass: "form-group input-group" },
+                      { staticClass: "form-group" },
                       [
+                        _c("label", { attrs: { for: "paycheck" } }, [
+                          _vm._v("Prosječna cijena obroka po članu posade")
+                        ]),
+                        _vm._v(" "),
                         _c(
                           "select",
                           {
@@ -72584,17 +72389,17 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.shipForm.selected_max_speed,
-                                expression: "shipForm.selected_max_speed"
+                                value: _vm.shipForm.food_price_id,
+                                expression: "shipForm.food_price_id"
                               }
                             ],
                             staticClass: "form-control",
                             class: {
                               "is-invalid": _vm.shipForm.errors.has(
-                                "selected_max_speed"
+                                "food_price_id"
                               )
                             },
-                            attrs: { type: "text", name: "max_speed" },
+                            attrs: { type: "text", name: "food_price" },
                             on: {
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
@@ -72607,7 +72412,7 @@ var render = function() {
                                   })
                                 _vm.$set(
                                   _vm.shipForm,
-                                  "selected_max_speed",
+                                  "food_price_id",
                                   $event.target.multiple
                                     ? $$selectedVal
                                     : $$selectedVal[0]
@@ -72616,91 +72421,30 @@ var render = function() {
                             }
                           },
                           [
-                            _c("option", { attrs: { value: "null" } }, [
-                              _vm._v("Izaberi maksimalnu brzinu")
+                            _c("option", { attrs: { value: "" } }, [
+                              _vm._v("Izaberi troškove obroka")
                             ]),
                             _vm._v(" "),
-                            _vm._l(_vm.propertyMaxSpeed, function(max_speed) {
+                            _vm._l(_vm.expenceFoodPrice, function(food) {
                               return _c(
                                 "option",
-                                {
-                                  key: max_speed.id,
-                                  domProps: { value: max_speed.id }
-                                },
-                                [_vm._v(_vm._s(max_speed.property_amount))]
+                                { key: food.id, domProps: { value: food.id } },
+                                [_vm._v(_vm._s(food.expence_amount))]
                               )
                             })
                           ],
                           2
                         ),
                         _vm._v(" "),
-                        _c("div", { staticClass: "input-group-append" }, [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-info",
-                              attrs: { type: "button" },
-                              on: { click: _vm.newPropertyMaxSpeedModal }
-                            },
-                            [_vm._v("Dodaj brzinu")]
-                          )
-                        ]),
-                        _vm._v(" "),
                         _c("has-error", {
-                          attrs: {
-                            form: _vm.shipForm,
-                            field: "selected_max_speed"
-                          }
+                          attrs: { form: _vm.shipForm, field: "food_price_id" }
                         })
                       ],
                       1
                     )
                   ]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "modal-footer" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-secondary",
-                        attrs: { type: "button", "data-dismiss": "modal" }
-                      },
-                      [_vm._v("Odustani")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        directives: [
-                          {
-                            name: "show",
-                            rawName: "v-show",
-                            value: _vm.editShipmode,
-                            expression: "editShipmode"
-                          }
-                        ],
-                        staticClass: "btn btn-success",
-                        attrs: { type: "submit" }
-                      },
-                      [_vm._v("Ažuriraj")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        directives: [
-                          {
-                            name: "show",
-                            rawName: "v-show",
-                            value: !_vm.editShipmode,
-                            expression: "!editShipmode"
-                          }
-                        ],
-                        staticClass: "btn btn-primary",
-                        attrs: { type: "submit" }
-                      },
-                      [_vm._v("Sačuvaj")]
-                    )
-                  ])
+                  _vm._m(4)
                 ]
               )
             ])
@@ -72999,35 +72743,45 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "close",
-        attrs: {
-          type: "button",
-          "data-dismiss": "modal",
-          "aria-label": "Close"
-        }
-      },
-      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-    )
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [
+        _vm._v("Promijeni podatke o troškovima broda")
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "close",
-        attrs: {
-          type: "button",
-          "data-dismiss": "modal",
-          "aria-label": "Close"
-        }
-      },
-      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-    )
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-secondary",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Odustani")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-success", attrs: { type: "submit" } },
+        [_vm._v("Ažuriraj")]
+      )
+    ])
   },
   function() {
     var _vm = this
@@ -73047,6 +72801,902 @@ var staticRenderFns = [
     )
   }
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Order.vue?vue&type=template&id=8a00ae1a&":
+/*!********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Order.vue?vue&type=template&id=8a00ae1a& ***!
+  \********************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _c("div", { staticClass: "col-12 mt-2 mb-3" }, [
+        _c("div", { staticClass: "d-flex justify-content-between" }, [
+          _c("h4", [_vm._v("Spisak porudžbina")]),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-sm btn-primary mb-2",
+              on: { click: _vm.newOrderModal }
+            },
+            [_vm._v("Napravi porudžbinu")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("table", { staticClass: "table table-striped" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c(
+            "tbody",
+            _vm._l(_vm.orders, function(order) {
+              return _c("tr", { key: order.id }, [
+                _c("td", [_vm._v(_vm._s())]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s() + " €")]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s() + " €/litru")]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s() + " €/obroku")])
+              ])
+            }),
+            0
+          )
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal hide fade",
+        attrs: {
+          id: "newOrderModal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "newOrderModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.storeOrder()
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.orderForm.order_name,
+                              expression: "orderForm.order_name"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.orderForm.errors.has("order_name")
+                          },
+                          attrs: {
+                            type: "text",
+                            name: "order_name",
+                            placeholder: "Naziv porudžbine (poručioca)"
+                          },
+                          domProps: { value: _vm.orderForm.order_name },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.orderForm,
+                                "order_name",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.orderForm, field: "order_name" }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("label", { attrs: { for: "destination" } }, [
+                          _vm._v("Destinacija")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.orderForm.destination_id,
+                                expression: "orderForm.destination_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.orderForm.errors.has(
+                                "avg_destination_id"
+                              )
+                            },
+                            attrs: { type: "text", name: "destination" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.orderForm,
+                                  "destination_id",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "null" } }, [
+                              _vm._v("Izaberi destinaciju")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.destinations, function(destination) {
+                              return _c(
+                                "option",
+                                {
+                                  key: destination.id,
+                                  domProps: { value: destination.id }
+                                },
+                                [_vm._v(_vm._s(destination.destination_name))]
+                              )
+                            })
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: {
+                            form: _vm.orderForm,
+                            field: "avg_destination_id"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("label", { attrs: { for: "ship_id" } }, [
+                          _vm._v("Brod")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.orderForm.ship_id,
+                                expression: "orderForm.ship_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.orderForm.errors.has("ship_id")
+                            },
+                            attrs: { type: "text", name: "ship_id" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.orderForm,
+                                  "ship_id",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "null" } }, [
+                              _vm._v("Izaberi brod za angažovanje")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.ships, function(ship) {
+                              return _c(
+                                "option",
+                                { key: ship.id, domProps: { value: ship.id } },
+                                [_vm._v(_vm._s(ship.boat_name))]
+                              )
+                            })
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.orderForm, field: "ship_id" }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "d-flex justify-content-between mt-4" },
+                      [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-sm btn-primary",
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.calculatePrice(
+                                  _vm.orderForm.destination_id,
+                                  _vm.orderForm.ship_id
+                                )
+                              }
+                            }
+                          },
+                          [_vm._v("Izračunaj cijenu usluge")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "label",
+                          { attrs: { "v-bind": _vm.orderForm.price } },
+                          [_vm._v(_vm._s(_vm.orderForm.price) + " €")]
+                        )
+                      ]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _vm._m(2)
+                ]
+              )
+            ])
+          ]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Poručilac")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Destinacija")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Brod")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Ukupna cijena")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [_vm._v("Napravi porudžbinu")]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-secondary",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Odustani")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-success", attrs: { type: "submit" } },
+        [_vm._v("Sačuvaj")]
+      )
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Welcome.vue?vue&type=template&id=51777872&":
+/*!**********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Welcome.vue?vue&type=template&id=51777872& ***!
+  \**********************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _c("h2", { staticClass: "my-2" }, [
+        _vm._v("Dobrodošli na Brodski Saobraćaj")
+      ]),
+      _vm._v(" "),
+      _c(
+        "svg",
+        {
+          attrs: {
+            id: "bb6491d8-974c-4727-a107-afc356bed175",
+            "data-name": "Layer 1",
+            xmlns: "http://www.w3.org/2000/svg",
+            "xmlns:xlink": "http://www.w3.org/1999/xlink",
+            width: "932.37538",
+            height: "100%",
+            viewBox: "0 0 932.37538 646.21974"
+          }
+        },
+        [
+          _c(
+            "defs",
+            [
+              _c(
+                "linearGradient",
+                {
+                  attrs: {
+                    id: "b10df757-55e5-4d99-9006-dc7249c3a778",
+                    x1: "401.19868",
+                    y1: "238.81186",
+                    x2: "401.19868",
+                    y2: "191.49163",
+                    gradientUnits: "userSpaceOnUse"
+                  }
+                },
+                [
+                  _c("stop", {
+                    attrs: {
+                      offset: "0",
+                      "stop-color": "gray",
+                      "stop-opacity": "0.25"
+                    }
+                  }),
+                  _c("stop", {
+                    attrs: {
+                      offset: "0.53514",
+                      "stop-color": "gray",
+                      "stop-opacity": "0.12"
+                    }
+                  }),
+                  _c("stop", {
+                    attrs: {
+                      offset: "1",
+                      "stop-color": "gray",
+                      "stop-opacity": "0.1"
+                    }
+                  })
+                ],
+                1
+              ),
+              _c("linearGradient", {
+                attrs: {
+                  id: "b7455b34-8431-4804-9964-905371e7992b",
+                  x1: "548.19868",
+                  y1: "175.41336",
+                  x2: "548.19868",
+                  y2: "144.89013",
+                  "xlink:href": "#b10df757-55e5-4d99-9006-dc7249c3a778"
+                }
+              }),
+              _c("linearGradient", {
+                attrs: {
+                  id: "a8bee007-5617-4059-9c68-754326cfe534",
+                  x1: "819.19868",
+                  y1: "155.41336",
+                  x2: "819.19868",
+                  y2: "124.89013",
+                  "xlink:href": "#b10df757-55e5-4d99-9006-dc7249c3a778"
+                }
+              }),
+              _c("linearGradient", {
+                attrs: {
+                  id: "b5786f2b-186c-4311-b51e-a01aadf48633",
+                  x1: "138.37538",
+                  y1: "143.68325",
+                  x2: "138.37538",
+                  y2: "9.68325",
+                  "xlink:href": "#b10df757-55e5-4d99-9006-dc7249c3a778"
+                }
+              })
+            ],
+            1
+          ),
+          _c("title", [_vm._v("Container ship")]),
+          _c("rect", {
+            attrs: {
+              x: "172.18769",
+              y: "163.10987",
+              width: "11",
+              height: "147",
+              fill: "#6c63ff",
+              stroke: "#6c63ff",
+              "stroke-miterlimit": "10"
+            }
+          }),
+          _c("rect", {
+            attrs: {
+              x: "407.42024",
+              y: "265.80813",
+              width: "109.26778",
+              height: "66.19873",
+              fill: "#f55f44"
+            }
+          }),
+          _c("rect", {
+            attrs: {
+              x: "516.68802",
+              y: "265.80813",
+              width: "109.26778",
+              height: "66.19873",
+              fill: "#4d8af0"
+            }
+          }),
+          _c("rect", {
+            attrs: {
+              x: "625.95581",
+              y: "265.80813",
+              width: "109.26778",
+              height: "66.19873",
+              fill: "#3ad29f"
+            }
+          }),
+          _c("rect", {
+            attrs: {
+              x: "406.62266",
+              y: "332.00686",
+              width: "109.26778",
+              height: "66.19873",
+              fill: "#4d8af0"
+            }
+          }),
+          _c("rect", {
+            attrs: {
+              x: "298.15245",
+              y: "332.00686",
+              width: "109.26778",
+              height: "66.19873",
+              fill: "#f55f44"
+            }
+          }),
+          _c("rect", {
+            attrs: {
+              x: "516.68802",
+              y: "332.00686",
+              width: "109.26778",
+              height: "66.19873",
+              fill: "#3ad29f"
+            }
+          }),
+          _c("rect", {
+            attrs: {
+              x: "625.95581",
+              y: "332.00686",
+              width: "109.26778",
+              height: "66.19873",
+              fill: "#fdd835"
+            }
+          }),
+          _c("g", { attrs: { opacity: "0.1" } }, [
+            _c("rect", {
+              attrs: {
+                x: "426.96083",
+                y: "265.40934",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            }),
+            _c("rect", {
+              attrs: {
+                x: "454.87595",
+                y: "265.40934",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            }),
+            _c("rect", {
+              attrs: {
+                x: "482.79108",
+                y: "265.40934",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            })
+          ]),
+          _c("g", { attrs: { opacity: "0.1" } }, [
+            _c("rect", {
+              attrs: {
+                x: "536.22861",
+                y: "265.40934",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            }),
+            _c("rect", {
+              attrs: {
+                x: "564.14374",
+                y: "265.40934",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            }),
+            _c("rect", {
+              attrs: {
+                x: "592.05887",
+                y: "265.40934",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            })
+          ]),
+          _c("g", { attrs: { opacity: "0.1" } }, [
+            _c("rect", {
+              attrs: {
+                x: "645.49639",
+                y: "265.40934",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            }),
+            _c("rect", {
+              attrs: {
+                x: "673.41152",
+                y: "265.40934",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            }),
+            _c("rect", {
+              attrs: {
+                x: "701.32665",
+                y: "265.40934",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            })
+          ]),
+          _c("g", { attrs: { opacity: "0.1" } }, [
+            _c("rect", {
+              attrs: {
+                x: "426.96083",
+                y: "331.60807",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            }),
+            _c("rect", {
+              attrs: {
+                x: "454.87595",
+                y: "331.60807",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            }),
+            _c("rect", {
+              attrs: {
+                x: "482.79108",
+                y: "331.60807",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            })
+          ]),
+          _c("g", { attrs: { opacity: "0.1" } }, [
+            _c("rect", {
+              attrs: {
+                x: "317.69304",
+                y: "331.60807",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            }),
+            _c("rect", {
+              attrs: {
+                x: "345.60817",
+                y: "331.60807",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            }),
+            _c("rect", {
+              attrs: {
+                x: "373.5233",
+                y: "331.60807",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            })
+          ]),
+          _c("g", { attrs: { opacity: "0.1" } }, [
+            _c("rect", {
+              attrs: {
+                x: "536.22861",
+                y: "331.60807",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            }),
+            _c("rect", {
+              attrs: {
+                x: "564.14374",
+                y: "331.60807",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            }),
+            _c("rect", {
+              attrs: {
+                x: "592.05887",
+                y: "331.60807",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            })
+          ]),
+          _c("g", { attrs: { opacity: "0.1" } }, [
+            _c("rect", {
+              attrs: {
+                x: "645.49639",
+                y: "331.60807",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            }),
+            _c("rect", {
+              attrs: {
+                x: "673.41152",
+                y: "331.60807",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            }),
+            _c("rect", {
+              attrs: {
+                x: "701.32665",
+                y: "331.60807",
+                width: "14.35635",
+                height: "66.19873"
+              }
+            })
+          ]),
+          _c("rect", {
+            attrs: {
+              x: "21.68769",
+              y: "475.60987",
+              width: "846",
+              height: "26",
+              fill: "#6c63ff",
+              stroke: "#6c63ff",
+              "stroke-miterlimit": "10"
+            }
+          }),
+          _c("path", {
+            attrs: {
+              d:
+                "M927.5,497.5h-498a12.0353,12.0353,0,0,1-12-12V412.176L223.5,390.5v223h716v-128A12.03523,12.03523,0,0,1,927.5,497.5Z",
+              transform: "translate(-136.81231 -124.89013)",
+              fill: "#6c63ff",
+              stroke: "#6c63ff",
+              "stroke-miterlimit": "10"
+            }
+          }),
+          _c("rect", {
+            attrs: {
+              x: "86.68769",
+              y: "289.60987",
+              width: "73",
+              height: "42",
+              fill: "#fff"
+            }
+          }),
+          _c("circle", {
+            attrs: {
+              cx: "177.68769",
+              cy: "162.60987",
+              r: "21",
+              fill: "#6c63ff",
+              stroke: "#6c63ff",
+              "stroke-miterlimit": "10"
+            }
+          }),
+          _c("path", {
+            attrs: {
+              d:
+                "M232.42919,621.629c7.43621-20.076,30.81892-30.532,52.21146-29.69484s41.31818,10.502,60.49411,20.0218,39.03219,19.27834,60.41542,20.32683c47.519,2.33,87.50948-38.12583,134.86347-42.71717,56.29339-5.4581,106.2505,40.38484,162.77635,42.27305,9.94081.33207,20.07934-.76708,29.23352-4.65693,7.96792-3.38576,14.9115-8.7506,22.437-13.03062,37.97935-21.60035,85.48272-13.44466,127.50129-1.46776s85.63709,27.32039,128.34948,18.11942",
+              transform: "translate(-136.81231 -124.89013)",
+              fill: "#4d8af0"
+            }
+          }),
+          _c("path", {
+            attrs: {
+              d:
+                "M136.81231,660.34986c7.43621-20.076,30.81892-30.532,52.21146-29.69484s41.31818,10.502,60.49411,20.02179,39.03219,19.27835,60.41543,20.32683c47.519,2.33,87.50947-38.12583,134.86346-42.71717,56.2934-5.45809,106.2505,40.38484,162.77636,42.27306,9.9408.33207,20.07933-.76709,29.23352-4.65693,7.96791-3.38577,14.91149-8.75061,22.437-13.03063,37.97935-21.60035,85.48272-13.44466,127.50129-1.46776S872.382,678.7246,915.09437,669.52363",
+              transform: "translate(-136.81231 -124.89013)",
+              fill: "#4d8af0"
+            }
+          }),
+          _c("path", {
+            attrs: {
+              d:
+                "M238.751,710.13385c7.43621-20.076,30.81891-30.532,52.21146-29.69484s41.31818,10.502,60.4941,20.0218,39.0322,19.27834,60.41543,20.32683c47.519,2.33,87.50948-38.12583,134.86346-42.71717,56.2934-5.4581,106.25051,40.38483,162.77636,42.27305,9.94081.33207,20.07934-.76708,29.23352-4.65693,7.96792-3.38577,14.9115-8.7506,22.43695-13.03063,37.97936-21.60034,85.48272-13.44466,127.50129-1.46775s85.6371,27.32039,128.34949,18.11941",
+              transform: "translate(-136.81231 -124.89013)",
+              fill: "#4d8af0"
+            }
+          }),
+          _c("path", {
+            attrs: {
+              d:
+                "M290.90563,759.12762c7.43621-20.076,30.81891-30.532,52.21146-29.69484s41.31818,10.502,60.4941,20.0218,39.0322,19.27834,60.41543,20.32683c47.519,2.33,87.50948-38.12583,134.86346-42.71717,56.2934-5.45809,106.25051,40.38484,162.77636,42.27305,9.94081.33207,20.07934-.76708,29.23352-4.65692,7.96792-3.38577,14.9115-8.75061,22.437-13.03063,37.97935-21.60035,85.48271-13.44466,127.50128-1.46776s85.6371,27.32039,128.34949,18.11942",
+              transform: "translate(-136.81231 -124.89013)",
+              fill: "#4d8af0"
+            }
+          }),
+          _c("g", { attrs: { opacity: "0.5" } }, [
+            _c("path", {
+              attrs: {
+                d:
+                  "M399.7606,238.81186l-6.89476-1.22015a44.53063,44.53063,0,0,1,.83228-5.06968c1.17046-14.78118-9.07915-30.33524-23.48846-34.25788l1.84394-6.77252c13.12918,3.57419,23.25482,14.56125,27.09635,27.35684a48.51881,48.51881,0,0,1,31.64965-22.94808l1.38809,6.88105c-15.1045,3.04638-27.94292,15.88994-31.53368,30.85849A35.46861,35.46861,0,0,1,399.7606,238.81186Z",
+                transform: "translate(-136.81231 -124.89013)",
+                fill: "url(#b10df757-55e5-4d99-9006-dc7249c3a778)"
+              }
+            })
+          ]),
+          _c("path", {
+            attrs: {
+              d:
+                "M399.96943,235.37611l-5.89356-1.043a38.06323,38.06323,0,0,1,.71143-4.3335c1.00049-12.63476-7.76074-25.93017-20.07764-29.2832l1.57617-5.78906c11.22266,3.05517,19.87793,12.44677,23.16163,23.38427a41.47322,41.47322,0,0,1,27.05371-19.61572l1.18652,5.88184c-12.91113,2.604-23.88525,13.58252-26.95459,26.37744A30.31677,30.31677,0,0,1,399.96943,235.37611Z",
+              transform: "translate(-136.81231 -124.89013)",
+              fill: "#706a6a"
+            }
+          }),
+          _c("g", { attrs: { opacity: "0.5" } }, [
+            _c("path", {
+              attrs: {
+                d:
+                  "M547.27107,175.41336l-4.44737-.787a28.726,28.726,0,0,1,.53685-3.27013c.755-9.53438-5.85637-19.5673-15.15089-22.09755l1.18941-4.36851c8.46878,2.30548,15.00018,9.39253,17.47811,17.64613a31.29632,31.29632,0,0,1,20.41514-14.80232l.89537,4.43852c-9.74294,1.965-18.02418,10.24958-20.34034,19.90482A22.87807,22.87807,0,0,1,547.27107,175.41336Z",
+                transform: "translate(-136.81231 -124.89013)",
+                fill: "url(#b7455b34-8431-4804-9964-905371e7992b)"
+              }
+            })
+          ]),
+          _c("g", { attrs: { opacity: "0.5" } }, [
+            _c("path", {
+              attrs: {
+                d:
+                  "M818.27107,155.41336l-4.44737-.787a28.726,28.726,0,0,1,.53685-3.27013c.755-9.53438-5.85637-19.5673-15.15089-22.09755l1.18941-4.36851c8.46878,2.30548,15.00018,9.39253,17.47811,17.64613a31.29632,31.29632,0,0,1,20.41514-14.80232l.89537,4.43852c-9.74294,1.965-18.02418,10.24958-20.34034,19.90482A22.87807,22.87807,0,0,1,818.27107,155.41336Z",
+                transform: "translate(-136.81231 -124.89013)",
+                fill: "url(#a8bee007-5617-4059-9c68-754326cfe534)"
+              }
+            })
+          ]),
+          _c("path", {
+            attrs: {
+              d:
+                "M547.59591,170.06886l-2.88993-.51143a18.66413,18.66413,0,0,1,.34885-2.125c.49059-6.19552-3.80552-12.715-9.84517-14.35916l.77289-2.83869A16.85575,16.85575,0,0,1,547.34,161.70122a20.33658,20.33658,0,0,1,13.26591-9.61866l.58182,2.88418a17.71236,17.71236,0,0,0-13.21731,12.93431A14.86648,14.86648,0,0,1,547.59591,170.06886Z",
+              transform: "translate(-136.81231 -124.89013)",
+              fill: "#706a6a"
+            }
+          }),
+          _c("path", {
+            attrs: {
+              d:
+                "M818.59591,150.06886l-2.88993-.51143a18.66413,18.66413,0,0,1,.34885-2.125c.49059-6.19552-3.80552-12.715-9.84517-14.35916l.77289-2.83869A16.85575,16.85575,0,0,1,818.34,141.70122a20.33658,20.33658,0,0,1,13.26591-9.61866l.58182,2.88418a17.71236,17.71236,0,0,0-13.21731,12.93431A14.86648,14.86648,0,0,1,818.59591,150.06886Z",
+              transform: "translate(-136.81231 -124.89013)",
+              fill: "#706a6a"
+            }
+          }),
+          _c("g", { attrs: { opacity: "0.5" } }, [
+            _c("circle", {
+              attrs: {
+                cx: "138.37538",
+                cy: "76.68325",
+                r: "67",
+                fill: "url(#b5786f2b-186c-4311-b51e-a01aadf48633)"
+              }
+            })
+          ]),
+          _c("circle", {
+            attrs: { cx: "138.37538", cy: "76.68325", r: "62", fill: "#fdd835" }
+          })
+        ]
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -87929,11 +88579,17 @@ Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]);
  */
 
 var routes = [{
+  path: '/',
+  component: __webpack_require__(/*! ./components/Welcome.vue */ "./resources/js/components/Welcome.vue")["default"]
+}, {
   path: '/dashboard',
   component: __webpack_require__(/*! ./components/Dashboard.vue */ "./resources/js/components/Dashboard.vue")["default"]
 }, {
   path: '/expences',
   component: __webpack_require__(/*! ./components/Expences.vue */ "./resources/js/components/Expences.vue")["default"]
+}, {
+  path: '/orders',
+  component: __webpack_require__(/*! ./components/Order.vue */ "./resources/js/components/Order.vue")["default"]
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]({
   routes: routes // short for `routes: routes`
@@ -88159,6 +88815,144 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Expences_vue_vue_type_template_id_183a9ef6___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Expences_vue_vue_type_template_id_183a9ef6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Order.vue":
+/*!*******************************************!*\
+  !*** ./resources/js/components/Order.vue ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Order_vue_vue_type_template_id_8a00ae1a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Order.vue?vue&type=template&id=8a00ae1a& */ "./resources/js/components/Order.vue?vue&type=template&id=8a00ae1a&");
+/* harmony import */ var _Order_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Order.vue?vue&type=script&lang=js& */ "./resources/js/components/Order.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Order_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Order_vue_vue_type_template_id_8a00ae1a___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Order_vue_vue_type_template_id_8a00ae1a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Order.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Order.vue?vue&type=script&lang=js&":
+/*!********************************************************************!*\
+  !*** ./resources/js/components/Order.vue?vue&type=script&lang=js& ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Order_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./Order.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Order.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Order_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Order.vue?vue&type=template&id=8a00ae1a&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/components/Order.vue?vue&type=template&id=8a00ae1a& ***!
+  \**************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Order_vue_vue_type_template_id_8a00ae1a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./Order.vue?vue&type=template&id=8a00ae1a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Order.vue?vue&type=template&id=8a00ae1a&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Order_vue_vue_type_template_id_8a00ae1a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Order_vue_vue_type_template_id_8a00ae1a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Welcome.vue":
+/*!*********************************************!*\
+  !*** ./resources/js/components/Welcome.vue ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Welcome_vue_vue_type_template_id_51777872___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Welcome.vue?vue&type=template&id=51777872& */ "./resources/js/components/Welcome.vue?vue&type=template&id=51777872&");
+/* harmony import */ var _Welcome_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Welcome.vue?vue&type=script&lang=js& */ "./resources/js/components/Welcome.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Welcome_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Welcome_vue_vue_type_template_id_51777872___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Welcome_vue_vue_type_template_id_51777872___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Welcome.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Welcome.vue?vue&type=script&lang=js&":
+/*!**********************************************************************!*\
+  !*** ./resources/js/components/Welcome.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Welcome_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./Welcome.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Welcome.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Welcome_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Welcome.vue?vue&type=template&id=51777872&":
+/*!****************************************************************************!*\
+  !*** ./resources/js/components/Welcome.vue?vue&type=template&id=51777872& ***!
+  \****************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Welcome_vue_vue_type_template_id_51777872___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./Welcome.vue?vue&type=template&id=51777872& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Welcome.vue?vue&type=template&id=51777872&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Welcome_vue_vue_type_template_id_51777872___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Welcome_vue_vue_type_template_id_51777872___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
