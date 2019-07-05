@@ -2860,10 +2860,79 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      orders: []
+      orders: [],
+      destinations: [],
+      ships: [],
+      orderForm: new Form({
+        order_name: '',
+        destination_id: null,
+        ship_id: null,
+        price: ''
+      })
     };
   },
   methods: {
@@ -2875,13 +2944,34 @@ __webpack_require__.r(__webpack_exports__);
         return _this.orders = data;
       });
     },
+    loadShips: function loadShips() {
+      var _this2 = this;
+
+      axios.get('api/ship').then(function (_ref2) {
+        var data = _ref2.data;
+        return _this2.ships = data;
+      });
+    },
+    loadDestinatios: function loadDestinatios() {
+      var _this3 = this;
+
+      axios.get('api/destination').then(function (_ref3) {
+        var data = _ref3.data;
+        return _this3.destinations = data;
+      });
+    },
     newOrderModal: function newOrderModal() {
       this.orderForm.reset();
       $('#newOrderModal').modal('show');
+    },
+    calculatePrice: function calculatePrice(destination_id, ship_id) {
+      console.log(destination_id + ' ' + ship_id);
     }
   },
   created: function created() {
     this.loadOrders();
+    this.loadDestinatios();
+    this.loadShips();
   }
 });
 
@@ -72768,7 +72858,267 @@ var render = function() {
           )
         ])
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal hide fade",
+        attrs: {
+          id: "newOrderModal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "newOrderModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.storeOrder()
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.orderForm.order_name,
+                              expression: "orderForm.order_name"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          class: {
+                            "is-invalid": _vm.orderForm.errors.has("order_name")
+                          },
+                          attrs: {
+                            type: "text",
+                            name: "order_name",
+                            placeholder: "Naziv porudžbine (poručioca)"
+                          },
+                          domProps: { value: _vm.orderForm.order_name },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.orderForm,
+                                "order_name",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.orderForm, field: "order_name" }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("label", { attrs: { for: "destination" } }, [
+                          _vm._v("Destinacija")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.orderForm.destination_id,
+                                expression: "orderForm.destination_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.orderForm.errors.has(
+                                "avg_destination_id"
+                              )
+                            },
+                            attrs: { type: "text", name: "destination" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.orderForm,
+                                  "destination_id",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "null" } }, [
+                              _vm._v("Izaberi destinaciju")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.destinations, function(destination) {
+                              return _c(
+                                "option",
+                                {
+                                  key: destination.id,
+                                  domProps: { value: destination.id }
+                                },
+                                [_vm._v(_vm._s(destination.destination_name))]
+                              )
+                            })
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: {
+                            form: _vm.orderForm,
+                            field: "avg_destination_id"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group" },
+                      [
+                        _c("label", { attrs: { for: "ship_id" } }, [
+                          _vm._v("Brod")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.orderForm.ship_id,
+                                expression: "orderForm.ship_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.orderForm.errors.has("ship_id")
+                            },
+                            attrs: { type: "text", name: "ship_id" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.orderForm,
+                                  "ship_id",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "null" } }, [
+                              _vm._v("Izaberi brod za angažovanje")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.ships, function(ship) {
+                              return _c(
+                                "option",
+                                { key: ship.id, domProps: { value: ship.id } },
+                                [_vm._v(_vm._s(ship.boat_name))]
+                              )
+                            })
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.orderForm, field: "ship_id" }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "d-flex justify-content-between mt-4" },
+                      [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-sm btn-primary",
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.calculatePrice(
+                                  _vm.orderForm.destination_id,
+                                  _vm.orderForm.ship_id
+                                )
+                              }
+                            }
+                          },
+                          [_vm._v("Izračunaj cijenu usluge")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "label",
+                          { attrs: { "v-bind": _vm.orderForm.price } },
+                          [_vm._v(_vm._s(_vm.orderForm.price) + " €")]
+                        )
+                      ]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _vm._m(2)
+                ]
+              )
+            ])
+          ]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -72784,8 +73134,50 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Brod")]),
         _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Cijena")])
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Ukupna cijena")])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [_vm._v("Napravi porudžbinu")]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-secondary",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Odustani")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-success", attrs: { type: "submit" } },
+        [_vm._v("Sačuvaj")]
+      )
     ])
   }
 ]
