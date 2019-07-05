@@ -205,7 +205,7 @@
             }
         },
         methods:{
-            loadShips(){
+            loadExpencesShips(){
                 axios.get('api/ship/expences/all').then( ({data}) => (this.ships = data) );
             },
             loadExpences(){
@@ -386,16 +386,16 @@
             }
         },
         mounted() {
-            this.loadShips();
+            this.loadExpencesShips();
             this.loadExpences();
 
             Event.$on('dbExpenceChanged', () => {
                 this.loadExpences();
-                this.loadShips();
+                this.loadExpencesShips();
             });
 
             Event.$on('dbShipChanged', () => {
-                this.loadShips()
+                this.loadExpencesShips()
             });
 
         }

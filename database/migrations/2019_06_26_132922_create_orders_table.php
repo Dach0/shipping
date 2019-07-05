@@ -15,7 +15,14 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('order_name')
+            $table->bigInteger('destination_id');
+            $table->bigInteger('ship_id');
+            $table->bigInteger('price');
             $table->timestamps();
+
+            $table->foreign('destination_id')->references('id')->on('destinations')->onDelete('cascade');
+            $table->foreign('ship_id')->references('id')->on('ships')->onDelete('cascade');
         });
     }
 
