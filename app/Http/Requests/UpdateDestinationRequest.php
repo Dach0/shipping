@@ -24,8 +24,8 @@ class UpdateDestinationRequest extends FormRequest
     public function rules()
     {
         return [
-            'destination_name' => 'required|max:35',
-            'distance' => 'required'
+            'destination_name.required' => 'required|max:35',
+            'distance.required' => 'required'
         ];
     }
 

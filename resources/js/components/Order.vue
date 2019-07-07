@@ -17,10 +17,10 @@
                             </thead>
                             <tbody>
                                 <tr  v-for="order in orders" :key="order.id">
-                                    <td>{{  }}</td>
-                                    <td>{{  }} €</td>
-                                    <td>{{  }} €/litru</td>
-                                    <td>{{  }} €/obroku</td>
+                                    <td>{{ order.order_name }}</td>
+                                    <td>{{ order.destination.destination_name }}</td>
+                                    <td>{{ order.ship.boat_name }}</td>
+                                    <td>{{ order.price }} €</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -51,11 +51,11 @@
                     <div class="form-group">
                         <label for="destination">Destinacija</label>
                         <select v-model="orderForm.destination_id" type="text" name="destination"
-                            class="form-control" :class="{ 'is-invalid': orderForm.errors.has('avg_destination_id') }">
+                            class="form-control" :class="{ 'is-invalid': orderForm.errors.has('destination_id') }">
                             <option value="null">Izaberi destinaciju</option>
                             <option v-for="destination in destinations" v-bind:key="destination.id" :value="destination.id">{{destination.destination_name}}</option>
                         </select>
-                        <has-error :form="orderForm" field="avg_destination_id"></has-error>
+                        <has-error :form="orderForm" field="destination_id"></has-error>
                     </div>
                     <div class="form-group">
                         <label for="ship_id">Brod</label>
@@ -69,8 +69,12 @@
                     
                     <div class="d-flex justify-content-between mt-4">
                         <button class="btn btn-sm btn-primary" @click.prevent="calculatePrice(orderForm.destination_id, orderForm.ship_id)" >Izračunaj cijenu usluge</button>
-                        <label :v-bind="orderForm.price">{{orderForm.price}} €</label>
+                        <label :v-bind="orderForm.price" :class="{ 'is-invalid': orderForm.errors.has('price')}" >{{orderForm.price}} €</label> 
                     </div>
+                        <div v-show="orderForm.errors.errors.price" field="price">
+                            <p class="text-danger">{{ orderForm.errors.errors.price }}</p>
+                        </div>
+                        
                     
 
              </div>
@@ -120,13 +124,39 @@
                 $('#newOrderModal').modal('show');
             },
             calculatePrice(destination_id, ship_id){
-                console.log(destination_id + ' ' + ship_id);
+                axios.get('api/order/price?dest_id=' + destination_id + '&ship_id=' + ship_id)
+                .then(({data}) => (this.orderForm.price = data.price));
+                // console.log(destination_id + ' ' + ship_id);
+            },
+            storeOrder(){
+                this.orderForm.post('api/order')
+                .then(() => { 
+                    Event.$emit('newOrderStored');
+                    
+                    $('#newOrderModal').modal('hide');
+
+                    Swal.fire({
+                        position: 'center',
+                        type: 'success',
+                        title: 'Porudžbina sačuvana u bazi podataka',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                })
+                .catch(() => {
+                     Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+                })
+
             }
         },
         created(){
             this.loadOrders();
             this.loadDestinatios();
             this.loadShips();
+
+            Event.$on('newOrderStored', () => {
+                this.loadOrders();
+            });
         }
     }
 </script>

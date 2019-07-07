@@ -32,8 +32,8 @@ class StorePropertyRequest extends FormRequest
     public function messages()
     {
         return [
-            'property_name' => 'Ime propertija je neophodno, do 35 karaktera molim',
-            'property_amount' => 'Količinu je neophodno unijeti i mora biti broj'
+            'property_name.required' => 'Ime propertija je neophodno, do 35 karaktera molim',
+            'property_amount.required' => 'Količinu je neophodno unijeti i mora biti broj'
         ];
     }
 }
