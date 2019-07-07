@@ -28,3 +28,4 @@ Route::put('ship/expences/update/{id}', 'ShipController@updateExpences');
 
 Route::get('order', 'OrderController@index');
 Route::post('order', 'OrderController@store');
+Route::get('order/price', 'OrderController@calculatePrice');

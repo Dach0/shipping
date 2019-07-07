@@ -16,7 +16,7 @@ class CreateExpencesTable extends Migration
         Schema::create('expences', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('expence_name');
-            $table->integer('expence_amount');
+            $table->float('expence_amount');
             $table->timestamps();
         });
     }

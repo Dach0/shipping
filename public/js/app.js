@@ -2921,6 +2921,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2965,13 +2969,38 @@ __webpack_require__.r(__webpack_exports__);
       $('#newOrderModal').modal('show');
     },
     calculatePrice: function calculatePrice(destination_id, ship_id) {
-      console.log(destination_id + ' ' + ship_id);
+      var _this4 = this;
+
+      axios.get('api/order/price?dest_id=' + destination_id + '&ship_id=' + ship_id).then(function (_ref4) {
+        var data = _ref4.data;
+        return _this4.orderForm.price = data.price;
+      }); // console.log(destination_id + ' ' + ship_id);
+    },
+    storeOrder: function storeOrder() {
+      this.orderForm.post('api/order').then(function () {
+        Event.$emit('newOrderStored');
+        $('#newOrderModal').modal('hide');
+        Swal.fire({
+          position: 'center',
+          type: 'success',
+          title: 'Porudžbina sačuvana u bazi podataka',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      })["catch"](function () {
+        Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
+      });
     }
   },
   created: function created() {
+    var _this5 = this;
+
     this.loadOrders();
     this.loadDestinatios();
     this.loadShips();
+    Event.$on('newOrderStored', function () {
+      _this5.loadOrders();
+    });
   }
 });
 
@@ -70847,14 +70876,14 @@ var render = function() {
                 _c("td", [_vm._v(_vm._s(ship.boat_name))]),
                 _vm._v(" "),
                 _c("td", [
-                  _vm._v(_vm._s(ship.properties[1].property_amount) + " l/km")
+                  _vm._v(_vm._s(ship.properties[0].property_amount) + " l/km")
                 ]),
                 _vm._v(" "),
                 _c("td", [_vm._v(_vm._s(ship.properties[2].property_amount))]),
                 _vm._v(" "),
                 _c("td", [
                   _vm._v(
-                    _vm._s(ship.properties[0].property_amount) + " čvorova"
+                    _vm._s(ship.properties[1].property_amount) + " čvorova"
                   )
                 ]),
                 _vm._v(" "),
@@ -72845,13 +72874,13 @@ var render = function() {
             "tbody",
             _vm._l(_vm.orders, function(order) {
               return _c("tr", { key: order.id }, [
-                _c("td", [_vm._v(_vm._s())]),
+                _c("td", [_vm._v(_vm._s(order.order_name))]),
                 _vm._v(" "),
-                _c("td", [_vm._v(_vm._s() + " €")]),
+                _c("td", [_vm._v(_vm._s(order.destination.destination_name))]),
                 _vm._v(" "),
-                _c("td", [_vm._v(_vm._s() + " €/litru")]),
+                _c("td", [_vm._v(_vm._s(order.ship.boat_name))]),
                 _vm._v(" "),
-                _c("td", [_vm._v(_vm._s() + " €/obroku")])
+                _c("td", [_vm._v(_vm._s(order.price) + " €")])
               ])
             }),
             0
@@ -72961,7 +72990,7 @@ var render = function() {
                             staticClass: "form-control",
                             class: {
                               "is-invalid": _vm.orderForm.errors.has(
-                                "avg_destination_id"
+                                "destination_id"
                               )
                             },
                             attrs: { type: "text", name: "destination" },
@@ -73007,7 +73036,7 @@ var render = function() {
                         _c("has-error", {
                           attrs: {
                             form: _vm.orderForm,
-                            field: "avg_destination_id"
+                            field: "destination_id"
                           }
                         })
                       ],
@@ -73104,9 +73133,34 @@ var render = function() {
                         _vm._v(" "),
                         _c(
                           "label",
-                          { attrs: { "v-bind": _vm.orderForm.price } },
+                          {
+                            class: {
+                              "is-invalid": _vm.orderForm.errors.has("price")
+                            },
+                            attrs: { "v-bind": _vm.orderForm.price }
+                          },
                           [_vm._v(_vm._s(_vm.orderForm.price) + " €")]
                         )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.orderForm.errors.errors.price,
+                            expression: "orderForm.errors.errors.price"
+                          }
+                        ],
+                        attrs: { field: "price" }
+                      },
+                      [
+                        _c("p", { staticClass: "text-danger" }, [
+                          _vm._v(_vm._s(_vm.orderForm.errors.errors.price))
+                        ])
                       ]
                     )
                   ]),
