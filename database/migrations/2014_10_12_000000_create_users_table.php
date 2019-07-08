@@ -34,6 +34,22 @@ class CreateUsersTable extends Migration
                 'role_id' => '1',
             )
         );
+        DB::table('users')->insert(
+            array(
+                'name' => 'operater',
+                'email' => 'operater@gmail.com',
+                'password' => app('hash')->make('operater'),
+                'role_id' => '2',
+            )
+        );
+        DB::table('users')->insert(
+            array(
+                'name' => 'prodaja',
+                'email' => 'prodaja@gmail.com',
+                'password' => app('hash')->make('prodaja'),
+                'role_id' => '3',
+            )
+        );
     }
 
     /**

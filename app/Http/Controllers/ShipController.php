@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreShipRequest;
 use App\Http\Requests\UpdateShipRequest;
 use App\Http\Requests\UpdateShipExpencesRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ShipController extends Controller
 {
@@ -27,7 +28,7 @@ class ShipController extends Controller
      */
     public function shipsWithExpences()
     {
-        return Ship::with('expences')->get();
+       return Ship::with('expences')->get();
     }
 
     /**
