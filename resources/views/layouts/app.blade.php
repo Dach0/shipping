@@ -35,9 +35,13 @@
                     @auth
                         <ul class="navbar-nav mr-auto">
                                 <li class="mr-1"><router-link to="/">Welcome</router-link></li>
+                                @if (Gate::check('isAdmin') || Gate::check('isOperator'))
                                 <li class="mr-1"><router-link to="/dashboard">Dashboard</router-link></li>
+                                @endif
+                                @if (Gate::check('isSales'))
                                 <li class="mr-1"><router-link to="/expences">Expences</router-link></li>
                                 <li><router-link to="/orders">Orders</router-link></li>
+                                @endif
                         </ul>    
                     @endauth
 
