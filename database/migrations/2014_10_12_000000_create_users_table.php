@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('api_token', 80)->unique()->nullable()->default(null);
             $table->bigInteger('role_id')->unsigned()->default('2');
             $table->rememberToken();
             $table->timestamps();
@@ -31,6 +32,7 @@ class CreateUsersTable extends Migration
                 'name' => 'damjan',
                 'email' => 'damjan@gmail.com',
                 'password' => app('hash')->make('krivacevic'),
+                'api_token' => Str::random(60),
                 'role_id' => '1',
             )
         );
@@ -39,6 +41,7 @@ class CreateUsersTable extends Migration
                 'name' => 'operater',
                 'email' => 'operater@gmail.com',
                 'password' => app('hash')->make('operater'),
+                'api_token' => Str::random(60),
                 'role_id' => '2',
             )
         );
@@ -47,6 +50,7 @@ class CreateUsersTable extends Migration
                 'name' => 'prodaja',
                 'email' => 'prodaja@gmail.com',
                 'password' => app('hash')->make('prodaja'),
+                'api_token' => Str::random(60),
                 'role_id' => '3',
             )
         );

@@ -37,6 +37,7 @@
                                 <li class="mr-1"><router-link to="/">Welcome</router-link></li>
                                 @if (Gate::check('isAdmin') || Gate::check('isOperator'))
                                 <li class="mr-1"><router-link to="/dashboard">Dashboard</router-link></li>
+                                {{-- <li class="mr-1"><router-link :to="{ name: 'Dashboard', params: { api_token : '{{ Auth::user()->api_token }}'} }">Dashboard</router-link></li> --}}
                                 @endif
                                 @if (Gate::check('isAdmin') || Gate::check('isSales'))
                                 <li class="mr-1"><router-link to="/expences">Expences</router-link></li>
@@ -85,5 +86,12 @@
             @yield('content')
         </main>
     </div>
+
+    @auth
+    <script>
+        window.user = @json(auth()->user())
+    </script>
+    @endauth
+
 </body>
 </html>

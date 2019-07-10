@@ -2187,7 +2187,11 @@ __webpack_require__.r(__webpack_exports__);
     loadShips: function loadShips() {
       var _this = this;
 
-      axios.get('api/ship').then(function (_ref) {
+      axios.get('api/ship', {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function (_ref) {
         var data = _ref.data;
         return _this.ships = data;
       });
@@ -2195,7 +2199,11 @@ __webpack_require__.r(__webpack_exports__);
     loadDestinatios: function loadDestinatios() {
       var _this2 = this;
 
-      axios.get('api/destination').then(function (_ref2) {
+      axios.get('api/destination', {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function (_ref2) {
         var data = _ref2.data;
         return _this2.destinations = data;
       });
@@ -2203,7 +2211,11 @@ __webpack_require__.r(__webpack_exports__);
     loadProperties: function loadProperties() {
       var _this3 = this;
 
-      axios.get('api/property').then(function (_ref3) {
+      axios.get('api/property', {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function (_ref3) {
         var data = _ref3.data;
         return _this3.properties = data;
       });
@@ -2218,7 +2230,11 @@ __webpack_require__.r(__webpack_exports__);
 
       this.editShipmode = true;
       $('#addShipModal').modal('show');
-      axios.get('api/ship/' + $id).then(function (_ref4) {
+      axios.get('api/ship/' + $id, {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function (_ref4) {
         var data = _ref4.data;
         return _this4.shipForm.id = data.boat_id, _this4.shipForm.boat_name = data.boat_name, _this4.shipForm.selected_consumption = data.consumption_id, _this4.shipForm.selected_crew_number = data.crew_number_id, _this4.shipForm.selected_max_speed = data.max_speed_id;
       }); // this.shipForm.fill(ship);
@@ -2236,7 +2252,11 @@ __webpack_require__.r(__webpack_exports__);
         confirmButtonText: 'Da, obriši!'
       }).then(function (result) {
         if (result.value) {
-          _this5.form["delete"]('api/destination/' + id).then(function () {
+          _this5.form["delete"]('api/destination/' + id, {
+            headers: {
+              Authorization: 'Bearer ' + _this5.$gate.token()
+            }
+          }).then(function () {
             Swal.fire('Obrisano!', 'Destinacija je obrisana', 'success');
             Event.$emit('dbChanged');
           })["catch"](function () {
@@ -2258,7 +2278,11 @@ __webpack_require__.r(__webpack_exports__);
         confirmButtonText: 'Da, obriši!'
       }).then(function (result) {
         if (result.value) {
-          _this6.shipForm["delete"]('api/ship/' + id).then(function () {
+          _this6.shipForm["delete"]('api/ship/' + id, {
+            headers: {
+              Authorization: 'Bearer ' + _this6.$gate.token()
+            }
+          }).then(function () {
             Swal.fire('Obrisano!', 'Brod je obrisan', 'success');
             Event.$emit('dbShipChanged');
           })["catch"](function () {
@@ -2268,7 +2292,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     updateDestination: function updateDestination() {
-      this.form.put("api/destination/" + this.form.id).then(function () {
+      this.form.put("api/destination/" + this.form.id, {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function () {
         Event.$emit('dbChanged');
         $('#addDestinationModal').modal('hide');
         Swal.fire({
@@ -2283,7 +2311,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     updateShip: function updateShip() {
-      this.shipForm.put("api/ship/" + this.shipForm.id).then(function () {
+      this.shipForm.put("api/ship/" + this.shipForm.id, {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function () {
         Event.$emit('dbShipChanged');
         $('#addShipModal').modal('hide');
         Swal.fire({
@@ -2298,7 +2330,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     createDestination: function createDestination() {
-      this.form.post('api/destination').then(function () {
+      this.form.post('api/destination', {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function () {
         Event.$emit('dbChanged');
         $('#addDestinationModal').modal('hide');
         Swal.fire({
@@ -2313,7 +2349,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     createShip: function createShip() {
-      this.shipForm.post('api/ship').then(function () {
+      this.shipForm.post('api/ship', {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function () {
         Event.$emit('dbShipChanged');
         $('#addShipModal').modal('hide');
         Swal.fire({
@@ -2405,6 +2445,7 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this7 = this;
 
+    console.log(this.$gate.token());
     this.loadDestinatios();
     this.loadShips();
     this.loadProperties();
@@ -3024,7 +3065,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['api_token']
+});
 
 /***/ }),
 
@@ -88577,6 +88620,60 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./resources/js/Gate.js":
+/*!******************************!*\
+  !*** ./resources/js/Gate.js ***!
+  \******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Gate; });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Gate =
+/*#__PURE__*/
+function () {
+  function Gate(user) {
+    _classCallCheck(this, Gate);
+
+    this.user = user;
+  }
+
+  _createClass(Gate, [{
+    key: "isAdmin",
+    value: function isAdmin() {
+      return this.user.role_id === 1;
+    }
+  }, {
+    key: "isOperator",
+    value: function isOperator() {
+      return this.user.role_id === 2;
+    }
+  }, {
+    key: "isSales",
+    value: function isSales() {
+      return this.user.role_id === 3;
+    }
+  }, {
+    key: "token",
+    value: function token() {
+      return this.user.api_token;
+    }
+  }]);
+
+  return Gate;
+}();
+
+
+
+/***/ }),
+
 /***/ "./resources/js/app.js":
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
@@ -88586,12 +88683,13 @@ module.exports = function(module) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vform__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vform */ "./node_modules/vform/dist/vform.common.js");
-/* harmony import */ var vform__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vform__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js");
-/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var bootstrap_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bootstrap-vue */ "./node_modules/bootstrap-vue/esm/index.js");
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
+/* harmony import */ var _Gate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Gate */ "./resources/js/Gate.js");
+/* harmony import */ var vform__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vform */ "./node_modules/vform/dist/vform.common.js");
+/* harmony import */ var vform__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vform__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js");
+/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var bootstrap_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! bootstrap-vue */ "./node_modules/bootstrap-vue/esm/index.js");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -88601,43 +88699,53 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /**
+ * Import gateova
+ */
+
+
+Vue.prototype.$gate = new _Gate__WEBPACK_IMPORTED_MODULE_0__["default"](window.user);
+/**
  * importing vform
  */
 
 
-window.Form = vform__WEBPACK_IMPORTED_MODULE_0__["Form"];
-Vue.component(vform__WEBPACK_IMPORTED_MODULE_0__["HasError"].name, vform__WEBPACK_IMPORTED_MODULE_0__["HasError"]);
-Vue.component(vform__WEBPACK_IMPORTED_MODULE_0__["AlertError"].name, vform__WEBPACK_IMPORTED_MODULE_0__["AlertError"]);
-Vue.component(vform__WEBPACK_IMPORTED_MODULE_0__["HasError"].name, vform__WEBPACK_IMPORTED_MODULE_0__["HasError"]);
-Vue.component(vform__WEBPACK_IMPORTED_MODULE_0__["AlertError"].name, vform__WEBPACK_IMPORTED_MODULE_0__["AlertError"]);
+window.Form = vform__WEBPACK_IMPORTED_MODULE_1__["Form"];
+Vue.component(vform__WEBPACK_IMPORTED_MODULE_1__["HasError"].name, vform__WEBPACK_IMPORTED_MODULE_1__["HasError"]);
+Vue.component(vform__WEBPACK_IMPORTED_MODULE_1__["AlertError"].name, vform__WEBPACK_IMPORTED_MODULE_1__["AlertError"]);
+Vue.component(vform__WEBPACK_IMPORTED_MODULE_1__["HasError"].name, vform__WEBPACK_IMPORTED_MODULE_1__["HasError"]);
+Vue.component(vform__WEBPACK_IMPORTED_MODULE_1__["AlertError"].name, vform__WEBPACK_IMPORTED_MODULE_1__["AlertError"]);
 /**
  * importing sweetalert2
  */
 
 
-window.Swal = sweetalert2__WEBPACK_IMPORTED_MODULE_1___default.a;
+window.Swal = sweetalert2__WEBPACK_IMPORTED_MODULE_2___default.a;
 /**
 * importing vue-bootstrap
 */
 
 
-Vue.use(bootstrap_vue__WEBPACK_IMPORTED_MODULE_2__["default"]);
+Vue.use(bootstrap_vue__WEBPACK_IMPORTED_MODULE_3__["default"]);
 /**
  * import vue-router
  */
 
 
-Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]);
+Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_4__["default"]);
 /**
  * define routes
  */
 
 var routes = [{
   path: '/',
-  component: __webpack_require__(/*! ./components/Welcome.vue */ "./resources/js/components/Welcome.vue")["default"]
+  name: 'Welcome',
+  component: __webpack_require__(/*! ./components/Welcome.vue */ "./resources/js/components/Welcome.vue")["default"],
+  props: true
 }, {
   path: '/dashboard',
-  component: __webpack_require__(/*! ./components/Dashboard.vue */ "./resources/js/components/Dashboard.vue")["default"]
+  name: 'Dashboard',
+  component: __webpack_require__(/*! ./components/Dashboard.vue */ "./resources/js/components/Dashboard.vue")["default"],
+  props: true
 }, {
   path: '/expences',
   component: __webpack_require__(/*! ./components/Expences.vue */ "./resources/js/components/Expences.vue")["default"]
@@ -88645,7 +88753,7 @@ var routes = [{
   path: '/orders',
   component: __webpack_require__(/*! ./components/Order.vue */ "./resources/js/components/Order.vue")["default"]
 }];
-var router = new vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]({
+var router = new vue_router__WEBPACK_IMPORTED_MODULE_4__["default"]({
   routes: routes // short for `routes: routes`
 
 });
@@ -88654,6 +88762,11 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]({
  */
 
 window.Event = new Vue();
+/**
+ * some custom components
+ */
+// Vue.component('user-component', require('./components/User.vue').default);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

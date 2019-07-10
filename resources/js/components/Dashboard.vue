@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
              <div class="col-12 mt-2 mb-3">
                     <div class="d-flex justify-content-between">
-                        <h4>Spisak brodova</h4>  
+                        <h4>Spisak brodova</h4>
                         <button class="btn btn-sm btn-primary mb-2"  @click="newShipModal">Dodaj brod</button>
                     </div>
                     <table class="table table-striped">
@@ -277,6 +277,7 @@
 </template>
 
 <script>
+
     export default {
         data() {
             return {
@@ -318,13 +319,29 @@
         },
         methods:{
             loadShips(){
-                axios.get('api/ship').then( ({data}) => (this.ships = data) );
+                axios.get('api/ship',
+                    {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                }).then( ({data}) => (this.ships = data) );
             },
             loadDestinatios(){
-                axios.get('api/destination').then( ({data}) => (this.destinations = data) );
+                axios.get('api/destination',
+                    {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                })
+                .then( ({data}) => (this.destinations = data) );
             },
             loadProperties(){
-                axios.get('api/property').then(({data}) => (this.properties = data));
+                axios.get('api/property',
+                    {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                }).then(({data}) => (this.properties = data));
             },
             editDestinationModal(dist){
                 this.editmode = true;
@@ -334,7 +351,12 @@
             editShipModal($id){
                 this.editShipmode = true;
                 $('#addShipModal').modal('show');
-                axios.get('api/ship/'+$id)
+                axios.get('api/ship/'+$id,
+                    {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                })
                     .then(({data}) => (
                         this.shipForm.id = data.boat_id,
                         this.shipForm.boat_name = data.boat_name,
@@ -355,7 +377,12 @@
                         }).then((result) => {
 
                         if (result.value) {
-                            this.form.delete('api/destination/'+id)
+                            this.form.delete('api/destination/'+id,
+                                {
+                                headers: {
+                                    Authorization: 'Bearer ' + this.$gate.token()
+                                }
+                            })
                             .then(()=> {
                                 Swal.fire(
                                 'Obrisano!',
@@ -382,7 +409,12 @@
                         }).then((result) => {
 
                         if (result.value) {
-                            this.shipForm.delete('api/ship/'+id)
+                            this.shipForm.delete('api/ship/'+id,
+                                {
+                                headers: {
+                                    Authorization: 'Bearer ' + this.$gate.token()
+                                }
+                            })
                             .then(()=> {
                                 Swal.fire(
                                 'Obrisano!',
@@ -398,7 +430,12 @@
                 })
             },
             updateDestination(){
-                this.form.put("api/destination/"+this.form.id)
+                this.form.put("api/destination/"+this.form.id,
+                    {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                })
                 .then(() => {
                     Event.$emit('dbChanged');
                     
@@ -417,7 +454,12 @@
                 });
             },
             updateShip(){
-                this.shipForm.put("api/ship/"+this.shipForm.id)
+                this.shipForm.put("api/ship/"+this.shipForm.id,
+                    {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                })
                 .then(() => {
                     Event.$emit('dbShipChanged');
                     
@@ -436,7 +478,12 @@
                 });
             },
             createDestination(){
-                this.form.post('api/destination')
+                this.form.post('api/destination',
+                    {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                })
                 .then(() => { 
                     Event.$emit('dbChanged');
                     
@@ -456,7 +503,12 @@
 
             },
             createShip(){
-                this.shipForm.post('api/ship')
+                this.shipForm.post('api/ship',
+                    {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                })
                 .then(() => { 
                     Event.$emit('dbShipChanged');
                     
@@ -563,6 +615,7 @@
             }
         },
         mounted() {
+            console.log(this.$gate.token());
             this.loadDestinatios();
             this.loadShips();
             this.loadProperties();
