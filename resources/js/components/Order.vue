@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" v-if="$gate.isAdminOrSales()">
              <div class="col-12 mt-2 mb-3">
                     <div class="d-flex justify-content-between">
                         <h4>Spisak porudžbina</h4>  
@@ -26,6 +26,10 @@
                         </table>
              </div>
         </div>
+
+<div v-if="!$gate.isAdminOrSales()">
+    <h3>Nemas pravo pristupa</h3>
+</div>
 
      <!-- ORDER MODAL -->
 <div class="modal hide fade" id="newOrderModal" tabindex="-1" role="dialog" aria-labelledby="newOrderModalLabel" aria-hidden="true">

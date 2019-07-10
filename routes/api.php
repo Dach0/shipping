@@ -17,7 +17,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('destination', 'DestinationController');
+Route::group(['middleware' => ['isAdmin','isOperator']], function() {
+    
+    Route::resource('destination', 'DestinationController', ['except' => 'index']);
+});
+
 Route::resource('ship', 'ShipController');
 Route::resource('property', 'PropertyController');
 Route::resource('expence', 'ExpenceController');

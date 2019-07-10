@@ -16,6 +16,18 @@ export default class Gate{
         return this.user.role_id === 3;
     }
 
+    isAdminOrOperator(){
+        if(this.user.role_id === 1 || this.user.role_id === 2){
+            return true;
+        }
+    }
+
+    isAdminOrSales(){
+        if(this.user.role_id === 1 || this.user.role_id === 3){
+            return true;
+        }
+    }
+
     token(){
         return this.user.api_token;
     }

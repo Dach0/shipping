@@ -2138,6 +2138,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2640,6 +2643,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2902,6 +2910,10 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
 //
 //
 //
@@ -70946,143 +70958,153 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row justify-content-center" }, [
-      _c("div", { staticClass: "col-12 mt-2 mb-3" }, [
-        _c("div", { staticClass: "d-flex justify-content-between" }, [
-          _c("h4", [_vm._v("Spisak brodova")]),
+    _vm.$gate.isAdminOrOperator()
+      ? _c("div", { staticClass: "row justify-content-center" }, [
+          _c("div", { staticClass: "col-12 mt-2 mb-3" }, [
+            _c("div", { staticClass: "d-flex justify-content-between" }, [
+              _c("h4", [_vm._v("Spisak brodova")]),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-sm btn-primary mb-2",
+                  on: { click: _vm.newShipModal }
+                },
+                [_vm._v("Dodaj brod")]
+              )
+            ]),
+            _vm._v(" "),
+            _c("table", { staticClass: "table table-striped" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.ships, function(ship) {
+                  return _c("tr", { key: ship.id }, [
+                    _c("td", [_vm._v(_vm._s(ship.boat_name))]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(
+                        _vm._s(ship.properties[0].property_amount) + " l/km"
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(_vm._s(ship.properties[2].property_amount))
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(
+                        _vm._s(ship.properties[1].property_amount) + " čvorova"
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-sm btn-success",
+                          on: {
+                            click: function($event) {
+                              return _vm.editShipModal(ship.id)
+                            }
+                          }
+                        },
+                        [_vm._v("Izmijeni")]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-sm btn-danger",
+                          on: {
+                            click: function($event) {
+                              return _vm.deleteShip(ship.id)
+                            }
+                          }
+                        },
+                        [_vm._v("Obriši")]
+                      )
+                    ])
+                  ])
+                }),
+                0
+              )
+            ])
+          ]),
           _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-sm btn-primary mb-2",
-              on: { click: _vm.newShipModal }
-            },
-            [_vm._v("Dodaj brod")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("table", { staticClass: "table table-striped" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c(
-            "tbody",
-            _vm._l(_vm.ships, function(ship) {
-              return _c("tr", { key: ship.id }, [
-                _c("td", [_vm._v(_vm._s(ship.boat_name))]),
-                _vm._v(" "),
-                _c("td", [
-                  _vm._v(_vm._s(ship.properties[0].property_amount) + " l/km")
-                ]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(ship.properties[2].property_amount))]),
-                _vm._v(" "),
-                _c("td", [
-                  _vm._v(
-                    _vm._s(ship.properties[1].property_amount) + " čvorova"
-                  )
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-sm btn-success",
-                      on: {
-                        click: function($event) {
-                          return _vm.editShipModal(ship.id)
-                        }
-                      }
-                    },
-                    [_vm._v("Izmijeni")]
-                  )
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-sm btn-danger",
-                      on: {
-                        click: function($event) {
-                          return _vm.deleteShip(ship.id)
-                        }
-                      }
-                    },
-                    [_vm._v("Obriši")]
-                  )
-                ])
-              ])
-            }),
-            0
-          )
+          _c("div", { staticClass: "col-12 mt-3" }, [
+            _c("div", { staticClass: "d-flex justify-content-between" }, [
+              _c("h4", [_vm._v("Spisak destinacija")]),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-sm btn-primary mb-2",
+                  on: { click: _vm.newModal }
+                },
+                [_vm._v("Dodaj destinaciju")]
+              )
+            ]),
+            _vm._v(" "),
+            _c("table", { staticClass: "table table-striped" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.destinations, function(dist) {
+                  return _c("tr", { key: dist.id }, [
+                    _c("td", [_vm._v(_vm._s(dist.destination_name))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(dist.distance))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(dist.created_at))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(dist.updated_at))]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-sm btn-success",
+                          on: {
+                            click: function($event) {
+                              return _vm.editDestinationModal(dist)
+                            }
+                          }
+                        },
+                        [_vm._v("Izmijeni")]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-sm btn-danger",
+                          on: {
+                            click: function($event) {
+                              return _vm.deleteDestination(dist.id)
+                            }
+                          }
+                        },
+                        [_vm._v("Obriši")]
+                      )
+                    ])
+                  ])
+                }),
+                0
+              )
+            ])
+          ])
         ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-12 mt-3" }, [
-        _c("div", { staticClass: "d-flex justify-content-between" }, [
-          _c("h4", [_vm._v("Spisak destinacija")]),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-sm btn-primary mb-2",
-              on: { click: _vm.newModal }
-            },
-            [_vm._v("Dodaj destinaciju")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("table", { staticClass: "table table-striped" }, [
-          _vm._m(1),
-          _vm._v(" "),
-          _c(
-            "tbody",
-            _vm._l(_vm.destinations, function(dist) {
-              return _c("tr", { key: dist.id }, [
-                _c("td", [_vm._v(_vm._s(dist.destination_name))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(dist.distance))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(dist.created_at))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(dist.updated_at))]),
-                _vm._v(" "),
-                _c("td", [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-sm btn-success",
-                      on: {
-                        click: function($event) {
-                          return _vm.editDestinationModal(dist)
-                        }
-                      }
-                    },
-                    [_vm._v("Izmijeni")]
-                  )
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-sm btn-danger",
-                      on: {
-                        click: function($event) {
-                          return _vm.deleteDestination(dist.id)
-                        }
-                      }
-                    },
-                    [_vm._v("Obriši")]
-                  )
-                ])
-              ])
-            }),
-            0
-          )
-        ])
-      ])
-    ]),
+      : _vm._e(),
+    _vm._v(" "),
+    !_vm.$gate.isAdminOrOperator()
+      ? _c("div", [_c("h3", [_vm._v("Nemas pravo pristupa")])])
+      : _vm._e(),
     _vm._v(" "),
     _c(
       "div",
@@ -72182,98 +72204,110 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row justify-content-center" }, [
-      _c("div", { staticClass: "col-12 mt-2 mb-3" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c("table", { staticClass: "table table-striped" }, [
-          _vm._m(1),
+    _vm.$gate.isAdminOrSales()
+      ? _c("div", { staticClass: "row justify-content-center" }, [
+          _c("div", { staticClass: "col-12 mt-2 mb-3" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("table", { staticClass: "table table-striped" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.ships, function(ship) {
+                  return _c("tr", { key: ship.id }, [
+                    _c("td", [_vm._v(_vm._s(ship.boat_name))]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(_vm._s(ship.expences[0].expence_amount) + " €")
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(
+                        _vm._s(ship.expences[1].expence_amount) + " €/litru"
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(
+                        _vm._s(ship.expences[2].expence_amount) + " €/obroku"
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-sm btn-success",
+                          on: {
+                            click: function($event) {
+                              return _vm.editShipModal(ship)
+                            }
+                          }
+                        },
+                        [_vm._v("Izmijeni")]
+                      )
+                    ])
+                  ])
+                }),
+                0
+              )
+            ])
+          ]),
           _vm._v(" "),
-          _c(
-            "tbody",
-            _vm._l(_vm.ships, function(ship) {
-              return _c("tr", { key: ship.id }, [
-                _c("td", [_vm._v(_vm._s(ship.boat_name))]),
-                _vm._v(" "),
-                _c("td", [
-                  _vm._v(_vm._s(ship.expences[0].expence_amount) + " €")
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  _vm._v(_vm._s(ship.expences[1].expence_amount) + " €/litru")
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  _vm._v(_vm._s(ship.expences[2].expence_amount) + " €/obroku")
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-sm btn-success",
-                      on: {
-                        click: function($event) {
-                          return _vm.editShipModal(ship)
-                        }
-                      }
-                    },
-                    [_vm._v("Izmijeni")]
-                  )
-                ])
-              ])
-            }),
-            0
-          )
+          _c("div", { staticClass: "col-12 mt-3" }, [
+            _c("div", { staticClass: "d-flex" }, [
+              _c("h4", { staticClass: " mr-auto" }, [
+                _vm._v("Spisak troškova")
+              ]),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-sm btn-primary mb-2 mr-1",
+                  on: { click: _vm.addExpenceModal }
+                },
+                [_vm._v("Dodaj trošak")]
+              )
+            ]),
+            _vm._v(" "),
+            _c("table", { staticClass: "table table-striped" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.expences, function(expence) {
+                  return _c("tr", { key: expence.id }, [
+                    _c("td", [_vm._v(_vm._s(expence.expence_name))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(expence.expence_amount))]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-sm btn-success",
+                          on: {
+                            click: function($event) {
+                              return _vm.editExpenceModal(expence)
+                            }
+                          }
+                        },
+                        [_vm._v("Izmijeni")]
+                      )
+                    ])
+                  ])
+                }),
+                0
+              )
+            ])
+          ])
         ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-12 mt-3" }, [
-        _c("div", { staticClass: "d-flex" }, [
-          _c("h4", { staticClass: " mr-auto" }, [_vm._v("Spisak troškova")]),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-sm btn-primary mb-2 mr-1",
-              on: { click: _vm.addExpenceModal }
-            },
-            [_vm._v("Dodaj trošak")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("table", { staticClass: "table table-striped" }, [
-          _vm._m(2),
-          _vm._v(" "),
-          _c(
-            "tbody",
-            _vm._l(_vm.expences, function(expence) {
-              return _c("tr", { key: expence.id }, [
-                _c("td", [_vm._v(_vm._s(expence.expence_name))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(expence.expence_amount))]),
-                _vm._v(" "),
-                _c("td", [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-sm btn-success",
-                      on: {
-                        click: function($event) {
-                          return _vm.editExpenceModal(expence)
-                        }
-                      }
-                    },
-                    [_vm._v("Izmijeni")]
-                  )
-                ])
-              ])
-            }),
-            0
-          )
-        ])
-      ])
-    ]),
+      : _vm._e(),
+    _vm._v(" "),
+    !_vm.$gate.isAdminOrSales()
+      ? _c("div", [_c("h3", [_vm._v("Nemas pravo pristupa")])])
+      : _vm._e(),
     _vm._v(" "),
     _c(
       "div",
@@ -72947,42 +72981,50 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row justify-content-center" }, [
-      _c("div", { staticClass: "col-12 mt-2 mb-3" }, [
-        _c("div", { staticClass: "d-flex justify-content-between" }, [
-          _c("h4", [_vm._v("Spisak porudžbina")]),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-sm btn-primary mb-2",
-              on: { click: _vm.newOrderModal }
-            },
-            [_vm._v("Napravi porudžbinu")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("table", { staticClass: "table table-striped" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c(
-            "tbody",
-            _vm._l(_vm.orders, function(order) {
-              return _c("tr", { key: order.id }, [
-                _c("td", [_vm._v(_vm._s(order.order_name))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(order.destination.destination_name))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(order.ship.boat_name))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(order.price) + " €")])
-              ])
-            }),
-            0
-          )
+    _vm.$gate.isAdminOrSales()
+      ? _c("div", { staticClass: "row justify-content-center" }, [
+          _c("div", { staticClass: "col-12 mt-2 mb-3" }, [
+            _c("div", { staticClass: "d-flex justify-content-between" }, [
+              _c("h4", [_vm._v("Spisak porudžbina")]),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-sm btn-primary mb-2",
+                  on: { click: _vm.newOrderModal }
+                },
+                [_vm._v("Napravi porudžbinu")]
+              )
+            ]),
+            _vm._v(" "),
+            _c("table", { staticClass: "table table-striped" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.orders, function(order) {
+                  return _c("tr", { key: order.id }, [
+                    _c("td", [_vm._v(_vm._s(order.order_name))]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(_vm._s(order.destination.destination_name))
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(order.ship.boat_name))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(order.price) + " €")])
+                  ])
+                }),
+                0
+              )
+            ])
+          ])
         ])
-      ])
-    ]),
+      : _vm._e(),
+    _vm._v(" "),
+    !_vm.$gate.isAdminOrSales()
+      ? _c("div", [_c("h3", [_vm._v("Nemas pravo pristupa")])])
+      : _vm._e(),
     _vm._v(" "),
     _c(
       "div",
@@ -88711,6 +88753,20 @@ function () {
     key: "isSales",
     value: function isSales() {
       return this.user.role_id === 3;
+    }
+  }, {
+    key: "isAdminOrOperator",
+    value: function isAdminOrOperator() {
+      if (this.user.role_id === 1 || this.user.role_id === 2) {
+        return true;
+      }
+    }
+  }, {
+    key: "isAdminOrSales",
+    value: function isAdminOrSales() {
+      if (this.user.role_id === 1 || this.user.role_id === 3) {
+        return true;
+      }
     }
   }, {
     key: "token",

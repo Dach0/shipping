@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" v-if="$gate.isAdminOrOperator()">
              <div class="col-12 mt-2 mb-3">
                     <div class="d-flex justify-content-between">
                         <h4>Spisak brodova</h4>
@@ -68,6 +68,9 @@
              </div>
         </div>
 
+<div v-if="!$gate.isAdminOrOperator()">
+    <h3>Nemas pravo pristupa</h3>
+  </div>
 
       <!-- DESTINATION MODAL -->
 <div class="modal fade" id="addDestinationModal" tabindex="-1" role="dialog" aria-labelledby="addDestinationModalLabel" aria-hidden="true">
