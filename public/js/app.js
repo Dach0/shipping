@@ -2340,7 +2340,7 @@ __webpack_require__.r(__webpack_exports__);
         Swal.fire({
           position: 'center',
           type: 'success',
-          title: 'Destinacija sačuvana u bazi podataka',
+          title: 'Destinacija sačuvana u bazu podataka',
           showConfirmButton: false,
           timer: 1500
         });
@@ -2359,7 +2359,7 @@ __webpack_require__.r(__webpack_exports__);
         Swal.fire({
           position: 'center',
           type: 'success',
-          title: 'Brod sačuvan u bazi podataka',
+          title: 'Brod sačuvan u bazu podataka',
           showConfirmButton: false,
           timer: 1500
         });
@@ -2445,7 +2445,6 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this7 = this;
 
-    console.log(this.$gate.token());
     this.loadDestinatios();
     this.loadShips();
     this.loadProperties();
@@ -2687,7 +2686,11 @@ __webpack_require__.r(__webpack_exports__);
     loadExpencesShips: function loadExpencesShips() {
       var _this = this;
 
-      axios.get('api/ship/expences/all').then(function (_ref) {
+      axios.get('api/ship/expences/all', {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function (_ref) {
         var data = _ref.data;
         return _this.ships = data;
       });
@@ -2695,7 +2698,11 @@ __webpack_require__.r(__webpack_exports__);
     loadExpences: function loadExpences() {
       var _this2 = this;
 
-      axios.get('api/expence').then(function (_ref2) {
+      axios.get('api/expence', {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function (_ref2) {
         var data = _ref2.data;
         return _this2.expences = data;
       });
@@ -2714,7 +2721,11 @@ __webpack_require__.r(__webpack_exports__);
       this.shipForm.food_price_id = ship.expences[2].id; // this.shipForm.fill(ship);
     },
     updateExpence: function updateExpence() {
-      this.form.put("api/expence/" + this.form.id).then(function () {
+      this.form.put("api/expence/" + this.form.id, {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function () {
         Event.$emit('dbExpenceChanged');
         $('#addEditExpenceModal').modal('hide');
         Swal.fire({
@@ -2729,7 +2740,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     updateShipExpences: function updateShipExpences() {
-      this.shipForm.put("api/ship/expences/update/" + this.shipForm.id).then(function () {
+      this.shipForm.put("api/ship/expences/update/" + this.shipForm.id, {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function () {
         Event.$emit('dbShipChanged');
         $('#editShipModal').modal('hide');
         Swal.fire({
@@ -2744,7 +2759,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     createExpence: function createExpence() {
-      this.form.post('api/expence').then(function () {
+      this.form.post('api/expence', {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function () {
         Event.$emit('dbExpenceChanged');
         $('#addEditExpenceModal').modal('hide');
         Swal.fire({
@@ -2759,7 +2778,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     createShip: function createShip() {
-      this.shipForm.post('api/ship').then(function () {
+      this.shipForm.post('api/ship', {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function () {
         Event.$emit('dbShipChanged');
         $('#addShipModal').modal('hide');
         Swal.fire({
@@ -2791,7 +2814,10 @@ __webpack_require__.r(__webpack_exports__);
     storePropertyConsumption: function storePropertyConsumption() {
       axios.post('api/property', {
         "property_name": 'consumption',
-        "property_amount": this.newPropertyConsumption
+        "property_amount": this.newPropertyConsumption,
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
       }).then(function () {
         Event.$emit('dbPropertyChanged');
         $('#addPropertyConsumptionModal').modal('hide');
@@ -2809,7 +2835,10 @@ __webpack_require__.r(__webpack_exports__);
     storePropertyCrewNumber: function storePropertyCrewNumber() {
       axios.post('api/property', {
         "property_name": 'crew_number',
-        "property_amount": this.newPropertyCrewNumber
+        "property_amount": this.newPropertyCrewNumber,
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
       }).then(function () {
         Event.$emit('dbPropertyChanged');
         $('#addPropertyCrewNumberModal').modal('hide');
@@ -2827,7 +2856,10 @@ __webpack_require__.r(__webpack_exports__);
     storePropertyMaxSpeed: function storePropertyMaxSpeed() {
       axios.post('api/property', {
         "property_name": 'max_speed',
-        "property_amount": this.newPropertyMaxSpeed
+        "property_amount": this.newPropertyMaxSpeed,
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
       }).then(function () {
         Event.$emit('dbPropertyChanged');
         $('#addPropertyMaxSpeedModal').modal('hide');
@@ -2984,7 +3016,11 @@ __webpack_require__.r(__webpack_exports__);
     loadOrders: function loadOrders() {
       var _this = this;
 
-      axios.get('api/order').then(function (_ref) {
+      axios.get('api/order', {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function (_ref) {
         var data = _ref.data;
         return _this.orders = data;
       });
@@ -2992,7 +3028,11 @@ __webpack_require__.r(__webpack_exports__);
     loadShips: function loadShips() {
       var _this2 = this;
 
-      axios.get('api/ship').then(function (_ref2) {
+      axios.get('api/ship', {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function (_ref2) {
         var data = _ref2.data;
         return _this2.ships = data;
       });
@@ -3000,7 +3040,11 @@ __webpack_require__.r(__webpack_exports__);
     loadDestinatios: function loadDestinatios() {
       var _this3 = this;
 
-      axios.get('api/destination').then(function (_ref3) {
+      axios.get('api/destination', {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function (_ref3) {
         var data = _ref3.data;
         return _this3.destinations = data;
       });
@@ -3012,13 +3056,21 @@ __webpack_require__.r(__webpack_exports__);
     calculatePrice: function calculatePrice(destination_id, ship_id) {
       var _this4 = this;
 
-      axios.get('api/order/price?dest_id=' + destination_id + '&ship_id=' + ship_id).then(function (_ref4) {
+      axios.get('api/order/price?dest_id=' + destination_id + '&ship_id=' + ship_id, {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function (_ref4) {
         var data = _ref4.data;
         return _this4.orderForm.price = data.price;
       }); // console.log(destination_id + ' ' + ship_id);
     },
     storeOrder: function storeOrder() {
-      this.orderForm.post('api/order').then(function () {
+      this.orderForm.post('api/order', {
+        headers: {
+          Authorization: 'Bearer ' + this.$gate.token()
+        }
+      }).then(function () {
         Event.$emit('newOrderStored');
         $('#newOrderModal').modal('hide');
         Swal.fire({

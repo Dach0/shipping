@@ -111,25 +111,45 @@
         },
         methods: {
             loadOrders(){
-                axios.get('api/order').then( ({data}) => (this.orders = data));
+                axios.get('api/order', {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                }).then( ({data}) => (this.orders = data));
             },
              loadShips(){
-                axios.get('api/ship').then( ({data}) => (this.ships = data) );
+                axios.get('api/ship', {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                }).then( ({data}) => (this.ships = data) );
             },
             loadDestinatios(){
-                axios.get('api/destination').then( ({data}) => (this.destinations = data) );
+                axios.get('api/destination', {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                }).then( ({data}) => (this.destinations = data) );
             },
             newOrderModal(){
                 this.orderForm.reset();
                 $('#newOrderModal').modal('show');
             },
             calculatePrice(destination_id, ship_id){
-                axios.get('api/order/price?dest_id=' + destination_id + '&ship_id=' + ship_id)
+                axios.get('api/order/price?dest_id=' + destination_id + '&ship_id=' + ship_id, {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                })
                 .then(({data}) => (this.orderForm.price = data.price));
                 // console.log(destination_id + ' ' + ship_id);
             },
             storeOrder(){
-                this.orderForm.post('api/order')
+                this.orderForm.post('api/order', {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                })
                 .then(() => { 
                     Event.$emit('newOrderStored');
                     

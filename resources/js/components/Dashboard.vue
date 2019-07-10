@@ -492,7 +492,7 @@
                     Swal.fire({
                         position: 'center',
                         type: 'success',
-                        title: 'Destinacija sačuvana u bazi podataka',
+                        title: 'Destinacija sačuvana u bazu podataka',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -517,7 +517,7 @@
                     Swal.fire({
                         position: 'center',
                         type: 'success',
-                        title: 'Brod sačuvan u bazi podataka',
+                        title: 'Brod sačuvan u bazu podataka',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -615,7 +615,6 @@
             }
         },
         mounted() {
-            console.log(this.$gate.token());
             this.loadDestinatios();
             this.loadShips();
             this.loadProperties();
