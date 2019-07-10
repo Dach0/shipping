@@ -9,6 +9,13 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 /**
+ * Import gateova
+ */
+
+import Gate from './Gate';
+Vue.prototype.$gate = new Gate(window.user);
+ 
+/**
  * importing vform
  */
 import { Form, HasError, AlertError } from 'vform'
@@ -47,8 +54,8 @@ window.Swal = Swal;
   * define routes
   */
  const routes = [
-    { path: '/', component: require('./components/Welcome.vue').default },
-    { path: '/dashboard', component: require('./components/Dashboard.vue').default },
+    { path: '/', name: 'Welcome', component: require('./components/Welcome.vue').default, props: true },
+    { path: '/dashboard', name: 'Dashboard', component: require('./components/Dashboard.vue').default, props: true },
     { path: '/expences', component: require('./components/Expences.vue').default  },
     { path: '/orders', component: require('./components/Order.vue').default  }
   ]
@@ -62,6 +69,11 @@ window.Swal = Swal;
    */
 
 window.Event = new Vue();
+
+/**
+ * some custom components
+ */
+// Vue.component('user-component', require('./components/User.vue').default);
 
 /**
  * The following block of code may be used to automatically register your

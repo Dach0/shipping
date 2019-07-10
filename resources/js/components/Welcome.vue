@@ -9,6 +9,6 @@
 
 <script>
     export default {
-  
+        props: ['api_token']
     }
 </script>
