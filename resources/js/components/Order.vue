@@ -28,7 +28,7 @@
         </div>
 
 <div v-if="!$gate.isAdminOrSales()">
-    <h3>Nemas pravo pristupa</h3>
+    <forbiden-notfound-component></forbiden-notfound-component>
 </div>
 
      <!-- ORDER MODAL -->
