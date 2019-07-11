@@ -69,7 +69,7 @@
         </div>
 
 <div v-if="!$gate.isAdminOrOperator()">
-    <h3>Nemas pravo pristupa</h3>
+    <forbiden-notfound-component></forbiden-notfound-component>
   </div>
 
       <!-- DESTINATION MODAL -->
@@ -280,6 +280,11 @@
 </template>
 
 <script>
+
+ var headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 32351321'
+        };
 
     export default {
         data() {
@@ -554,7 +559,8 @@
                 axios.post('api/property', {
                     "property_name" : 'consumption',
                     "property_amount" : this.newPropertyConsumption
-                })
+                }, {headers :  {'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + this.$gate.token()}})
                  .then(() => { 
                     Event.$emit('dbPropertyChanged');
                     
@@ -576,7 +582,9 @@
                 axios.post('api/property', {
                     "property_name" : 'crew_number',
                     "property_amount" : this.newPropertyCrewNumber
-                })
+                    }, 
+                    { headers :  {'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + this.$gate.token()}})
                  .then(() => { 
                     Event.$emit('dbPropertyChanged');
                     
@@ -598,8 +606,10 @@
                 axios.post('api/property', {
                     "property_name" : 'max_speed',
                     "property_amount" : this.newPropertyMaxSpeed
-                })
-                 .then(() => { 
+                    },
+                    {headers :  {'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + this.$gate.token()}})
+                  .then(() => { 
                     Event.$emit('dbPropertyChanged');
                     
                     $('#addPropertyMaxSpeedModal').modal('hide');

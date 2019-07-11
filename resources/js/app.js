@@ -7,6 +7,14 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+/**
+ * Komponente
+ */
+
+Vue.component(
+  'forbiden-notfound-component',
+  require('./components/ForbiddenOrNotFound').default
+);
 
 /**
  * Import gateova

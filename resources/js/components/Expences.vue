@@ -57,7 +57,7 @@
 
 
 <div v-if="!$gate.isAdminOrSales()">
-    <h3>Nemas pravo pristupa</h3>
+    <forbiden-notfound-component></forbiden-notfound-component>
 </div>
 
 
@@ -346,81 +346,6 @@
             },
             newPropertyCrewNumberModal(){
                 $('#addPropertyCrewNumberModal').modal('show');
-            },
-            storePropertyConsumption(){
-                axios.post('api/property', {
-                    "property_name" : 'consumption',
-                    "property_amount" : this.newPropertyConsumption,
-                    headers: {
-                        Authorization: 'Bearer ' + this.$gate.token()
-                    }
-                })
-                 .then(() => { 
-                    Event.$emit('dbPropertyChanged');
-                    
-                    $('#addPropertyConsumptionModal').modal('hide');
-
-                    Swal.fire({
-                        position: 'center',
-                        type: 'success',
-                        title: 'Nova potrošnja unešena u bazu',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                })
-                .catch(() => {
-                     Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
-                })
-            },
-            storePropertyCrewNumber(){
-                axios.post('api/property', {
-                    "property_name" : 'crew_number',
-                    "property_amount" : this.newPropertyCrewNumber,
-                    headers: {
-                        Authorization: 'Bearer ' + this.$gate.token()
-                    }
-                })
-                 .then(() => { 
-                    Event.$emit('dbPropertyChanged');
-                    
-                    $('#addPropertyCrewNumberModal').modal('hide');
-
-                    Swal.fire({
-                        position: 'center',
-                        type: 'success',
-                        title: 'Novi broj posade unešen u bazu',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                })
-                .catch(() => {
-                     Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
-                })
-            },
-            storePropertyMaxSpeed(){
-                axios.post('api/property', {
-                    "property_name" : 'max_speed',
-                    "property_amount" : this.newPropertyMaxSpeed,
-                    headers: {
-                        Authorization: 'Bearer ' + this.$gate.token()
-                    }
-                })
-                 .then(() => { 
-                    Event.$emit('dbPropertyChanged');
-                    
-                    $('#addPropertyMaxSpeedModal').modal('hide');
-
-                    Swal.fire({
-                        position: 'center',
-                        type: 'success',
-                        title: 'Nova brzina unešena u bazu',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                })
-                .catch(() => {
-                     Swal.fire("Neuspješno!", "Nešto je pošlo do đavola", "warning");
-                })
             }
         },
         mounted() {
