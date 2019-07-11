@@ -11,7 +11,7 @@ class DestinationController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api');
+       $this->middleware('auth:api');
     }
     /**
      * Display a listing of the resource.
@@ -41,33 +41,12 @@ class DestinationController extends Controller
      */
     public function store(StoreDestinationRequest $request)
     {
-        $destination = Destination::create($request->all());
-
-        return ['message' => 'Destinacija kreirana', 'data' => response()->json($destination)];
+            $destination = Destination::create($request->all());
+    
+            return ['message' => 'Destinacija kreirana', 'data' => response()->json($destination)];
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Destination  $destination
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Destination $destination)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Destination  $destination
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Destination $destination)
-    {
-        //
-    }
-
+    
     /**
      * Update the specified resource in storage.
      *

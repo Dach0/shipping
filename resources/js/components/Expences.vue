@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" v-if="$gate.isAdminOrSales()">
              <div class="col-12 mt-2 mb-3">
                     <div class="d-flex justify-content-between">
                         <h4>Spisak troškova po brodu</h4>  
@@ -54,6 +54,11 @@
                     </table>
              </div>
         </div>
+
+
+<div v-if="!$gate.isAdminOrSales()">
+    <h3>Nemas pravo pristupa</h3>
+</div>
 
 
       <!-- SHIP MODAL -->
@@ -206,10 +211,18 @@
         },
         methods:{
             loadExpencesShips(){
-                axios.get('api/ship/expences/all').then( ({data}) => (this.ships = data) );
+                axios.get('api/ship/expences/all', {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                }).then( ({data}) => (this.ships = data) );
             },
             loadExpences(){
-                axios.get('api/expence').then(({data}) => (this.expences = data));
+                axios.get('api/expence', {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                }).then(({data}) => (this.expences = data));
             },
             editExpenceModal(exp){
                 this.editExpencemode = true;
@@ -226,7 +239,11 @@
                 // this.shipForm.fill(ship);
             },
             updateExpence(){
-                this.form.put("api/expence/"+this.form.id)
+                this.form.put("api/expence/"+this.form.id,  {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                })
                 .then(() => {
                     Event.$emit('dbExpenceChanged');
                     
@@ -245,7 +262,11 @@
                 });
             },
             updateShipExpences(){
-                this.shipForm.put("api/ship/expences/update/"+this.shipForm.id)
+                this.shipForm.put("api/ship/expences/update/"+this.shipForm.id,  {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                })
                 .then(() => {
                     Event.$emit('dbShipChanged');
                     
@@ -264,7 +285,11 @@
                 });
             },
             createExpence(){
-                this.form.post('api/expence')
+                this.form.post('api/expence',  {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                })
                 .then(() => { 
                     Event.$emit('dbExpenceChanged');
                     
@@ -284,7 +309,11 @@
 
             },
             createShip(){
-                this.shipForm.post('api/ship')
+                this.shipForm.post('api/ship',  {
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
+                })
                 .then(() => { 
                     Event.$emit('dbShipChanged');
                     
@@ -321,7 +350,10 @@
             storePropertyConsumption(){
                 axios.post('api/property', {
                     "property_name" : 'consumption',
-                    "property_amount" : this.newPropertyConsumption
+                    "property_amount" : this.newPropertyConsumption,
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
                 })
                  .then(() => { 
                     Event.$emit('dbPropertyChanged');
@@ -343,7 +375,10 @@
             storePropertyCrewNumber(){
                 axios.post('api/property', {
                     "property_name" : 'crew_number',
-                    "property_amount" : this.newPropertyCrewNumber
+                    "property_amount" : this.newPropertyCrewNumber,
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
                 })
                  .then(() => { 
                     Event.$emit('dbPropertyChanged');
@@ -365,7 +400,10 @@
             storePropertyMaxSpeed(){
                 axios.post('api/property', {
                     "property_name" : 'max_speed',
-                    "property_amount" : this.newPropertyMaxSpeed
+                    "property_amount" : this.newPropertyMaxSpeed,
+                    headers: {
+                        Authorization: 'Bearer ' + this.$gate.token()
+                    }
                 })
                  .then(() => { 
                     Event.$emit('dbPropertyChanged');
