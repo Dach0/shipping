@@ -11,7 +11,7 @@ class DestinationController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api');
+       $this->middleware('auth:api');
     }
     /**
      * Display a listing of the resource.
@@ -41,13 +41,9 @@ class DestinationController extends Controller
      */
     public function store(StoreDestinationRequest $request)
     {
-        if (\Gate::allows('isAdmin') || \Gate::allows('isOperator') ){
-
             $destination = Destination::create($request->all());
     
             return ['message' => 'Destinacija kreirana', 'data' => response()->json($destination)];
-        }
-        abort(403, 'Unauthorized action.');
     }
 
     
