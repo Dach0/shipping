@@ -20,6 +20,7 @@ class CreateOrdersTable extends Migration
             $table->bigInteger('ship_id')->unsigned();
             $table->bigInteger('price');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('destination_id')->references('id')->on('destinations')->onDelete('cascade');
             $table->foreign('ship_id')->references('id')->on('ships')->onDelete('cascade');

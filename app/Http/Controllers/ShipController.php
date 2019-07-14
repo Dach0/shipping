@@ -8,6 +8,7 @@ use App\Http\Requests\StoreShipRequest;
 use App\Http\Requests\UpdateShipRequest;
 use App\Http\Requests\UpdateShipExpencesRequest;
 use Illuminate\Support\Facades\Auth;
+use App\ShipHasProperty;
 
 class ShipController extends Controller
 {
@@ -22,7 +23,10 @@ class ShipController extends Controller
      */
     public function index()
     {
-        return Ship::with('properties')->get();
+        return Ship::with(['shipHasProperties.property'])->get();
+        // return Ship::with(['shipHasProperties'  => function (Builder $query) {
+        //                     $query->where('active', 1);
+        //                      }])->get();
     }
 
     /**
@@ -45,9 +49,7 @@ class ShipController extends Controller
     {
         $ship = Ship::create(['boat_name' => $request->boat_name]);
 
-        $ship->properties()->attach([$request->selected_consumption, $request->selected_max_speed, $request->selected_crew_number]);
-
-        $ship->expences()->attach([1,2,3]);
+        $ship->addProperty($request);
 
         return ['message' => 'Kreiran brod'];
     }

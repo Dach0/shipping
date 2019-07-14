@@ -3,23 +3,20 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
 use App\Ship;
+use App\Property;
 
-class Order extends Model
+class ShipHasProperty extends Model
 {
-    use SoftDeletes;
-
     protected $guarded = [];
-
+    
     public function ship()
     {
         return $this->belongsTo(Ship::class);
     }
-
-    public function destination()
+    
+    public function property()
     {
-        return $this->belongsTo(Destination::class);
+        return $this->belongsTo(Property::class);
     }
 }

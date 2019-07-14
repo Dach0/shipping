@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateExpenceShipTable extends Migration
+class CreateShipHasExpencesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,16 @@ class CreateExpenceShipTable extends Migration
      */
     public function up()
     {
-        Schema::create('expence_ship', function (Blueprint $table) {
+        Schema::create('ship_has_expences', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('ship_id')->unsigned();
             $table->bigInteger('expence_id')->unsigned();
+            $table->float('expence_amount');
+            $table->boolean('active');
+            $table->timestamps();
 
-            $table->foreign('ship_id')->references('id')->on('ships')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('expence_id')->references('id')->on('expences')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('ship_id')->references('id')->on('ships');
+            $table->foreign('expence_id')->references('id')->on('expences');
         });
     }
 
@@ -30,6 +33,6 @@ class CreateExpenceShipTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('expence_ship');
+        Schema::dropIfExists('ship_has_expences');
     }
 }
