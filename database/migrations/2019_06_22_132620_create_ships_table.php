@@ -17,6 +17,7 @@ class CreateShipsTable extends Migration
             $table->bigIncrements('id');
             $table->string('boat_name');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

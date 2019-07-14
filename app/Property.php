@@ -10,8 +10,8 @@ class Property extends Model
 
     protected $guarded=[];
 
-    public function ships()
+    public function shipHasProperties()
     {
-        return $this->belongsToMany(Ship::class);
+        return $this->hasMany(ShipHasProperty::class);
     }
 }

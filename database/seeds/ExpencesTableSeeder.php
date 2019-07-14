@@ -19,21 +19,8 @@ class ExpencesTableSeeder extends Seeder
             DB::table('expences')->insert(
                     array(
                         'expence_name' => $value,
-                        'expence_amount' => 0 
                     )
             );
-        }
-
-
-        for ($i=0; $i < 3 ; $i++) { 
-            foreach ($expences as $key => $value) {
-                DB::table('expences')->insert(
-                    array(
-                        'expence_name' => $value,
-                        'expence_amount' => rand(15, 50) 
-                    )
-            );    
-            }
-        }            
+        }           
     }
 }
