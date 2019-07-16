@@ -195,9 +195,8 @@
                     distance : ''
                 }),
                 shipForm: new Form({
-                    id:'',
+                    boat_id:'',
                     boat_name:'',
-                    property_id:'',
                     consumption: null,
                     crew_number: null,
                     max_speed: null,
@@ -245,12 +244,13 @@
                     }
                 })
                     .then(({data}) => (
-                        this.shipForm.id = data.boat_id,
-                        this.shipForm.boat_name = data.boat_name,
-                        this.shipForm.selected_consumption = data.consumption_id,
-                        this.shipForm.selected_crew_number = data.crew_number_id,
-                        this.shipForm.selected_max_speed = data.max_speed_id ));
-                // this.shipForm.fill(ship);
+                        // this.shipForm.id = data.boat_id,
+                        // this.shipForm.boat_name = data.boat_name,
+                        // this.shipForm.selected_consumption = data.consumption,
+                        // this.shipForm.selected_crew_number = data.crew_number,
+                        // this.shipForm.selected_max_speed = data.max_speed ));
+                this.shipForm.fill(data)
+                ));
             },
             deleteDestination(id){
                 Swal.fire({
@@ -284,7 +284,7 @@
                         }
                 })
             },
-            deleteShip(id){
+            deleteShip(boat_id){
                 Swal.fire({
                     title: 'Jeste li sigurni?',
                     text: "Nećete moći da opozovete akciju!",
@@ -296,7 +296,7 @@
                         }).then((result) => {
 
                         if (result.value) {
-                            this.shipForm.delete('api/ship/'+id,
+                            this.shipForm.delete('api/ship/'+boat_id,
                                 {
                                 headers: {
                                     Authorization: 'Bearer ' + this.$gate.token()
@@ -341,7 +341,7 @@
                 });
             },
             updateShip(){
-                this.shipForm.put("api/ship/"+this.shipForm.id,
+                this.shipForm.put("api/ship/"+this.shipForm.boat_id,
                     {
                     headers: {
                         Authorization: 'Bearer ' + this.$gate.token()

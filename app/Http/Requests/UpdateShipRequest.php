@@ -24,11 +24,11 @@ class UpdateShipRequest extends FormRequest
     public function rules()
     {
         return [
-            "id" => "required",
-            "boat_name" => "required",
-            "selected_consumption" => "required",
-            "selected_crew_number" => "required",
-            "selected_max_speed" => "required"
+            "boat_id" => "required",
+            'boat_name' => 'required|max:35',
+            'consumption' => 'required',
+            'crew_number' => 'required',
+            'max_speed' => 'required'
         ];
     }
 }

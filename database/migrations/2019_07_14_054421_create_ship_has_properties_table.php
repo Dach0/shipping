@@ -20,6 +20,7 @@ class CreateShipHasPropertiesTable extends Migration
             $table->float('property_amount');
             $table->boolean('active');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('ship_id')->references('id')->on('ships');
             $table->foreign('property_id')->references('id')->on('properties');

@@ -2054,9 +2054,8 @@ var headers = {
         distance: ''
       }),
       shipForm: new Form({
-        id: '',
+        boat_id: '',
         boat_name: '',
-        property_id: '',
         consumption: null,
         crew_number: null,
         max_speed: null
@@ -2116,8 +2115,14 @@ var headers = {
         }
       }).then(function (_ref4) {
         var data = _ref4.data;
-        return _this4.shipForm.id = data.boat_id, _this4.shipForm.boat_name = data.boat_name, _this4.shipForm.selected_consumption = data.consumption_id, _this4.shipForm.selected_crew_number = data.crew_number_id, _this4.shipForm.selected_max_speed = data.max_speed_id;
-      }); // this.shipForm.fill(ship);
+        return (// this.shipForm.id = data.boat_id,
+          // this.shipForm.boat_name = data.boat_name,
+          // this.shipForm.selected_consumption = data.consumption,
+          // this.shipForm.selected_crew_number = data.crew_number,
+          // this.shipForm.selected_max_speed = data.max_speed ));
+          _this4.shipForm.fill(data)
+        );
+      });
     },
     deleteDestination: function deleteDestination(id) {
       var _this5 = this;
@@ -2145,7 +2150,7 @@ var headers = {
         }
       });
     },
-    deleteShip: function deleteShip(id) {
+    deleteShip: function deleteShip(boat_id) {
       var _this6 = this;
 
       Swal.fire({
@@ -2158,7 +2163,7 @@ var headers = {
         confirmButtonText: 'Da, obriši!'
       }).then(function (result) {
         if (result.value) {
-          _this6.shipForm["delete"]('api/ship/' + id, {
+          _this6.shipForm["delete"]('api/ship/' + boat_id, {
             headers: {
               Authorization: 'Bearer ' + _this6.$gate.token()
             }
@@ -2191,7 +2196,7 @@ var headers = {
       });
     },
     updateShip: function updateShip() {
-      this.shipForm.put("api/ship/" + this.shipForm.id, {
+      this.shipForm.put("api/ship/" + this.shipForm.boat_id, {
         headers: {
           Authorization: 'Bearer ' + this.$gate.token()
         }

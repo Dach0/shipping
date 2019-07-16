@@ -12,6 +12,7 @@ use App\ShipHasProperty;
 
 class ShipController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth:api');
@@ -23,10 +24,9 @@ class ShipController extends Controller
      */
     public function index()
     {
-        return Ship::with(['shipHasProperties.property'])->get();
-        // return Ship::with(['shipHasProperties'  => function (Builder $query) {
-        //                     $query->where('active', 1);
-        //                      }])->get();
+        return Ship::with(['shipHasProperties' => function($query) {
+                                $query->where('active', true);
+                        }, 'shipHasProperties.property'])->get();
     }
 
     /**
@@ -47,9 +47,7 @@ class ShipController extends Controller
      */
     public function store(StoreShipRequest $request)
     {
-        $ship = Ship::create(['boat_name' => $request->boat_name]);
-
-        $ship->addProperty($request);
+        Ship::create(['boat_name' => $request->boat_name])->addProperty($request);
 
         return ['message' => 'Kreiran brod'];
     }
@@ -60,29 +58,9 @@ class ShipController extends Controller
      * @param  \App\Ship  $ship
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Ship $ship)
     {
-        // return Ship::with('properties','expences')->findOrFail($id);  -> ako hoću da hendlujem na frontu
-
-        $ship = Ship::findOrFail($id);
-        $consumption_id = null;
-        $crew_number_id = null;
-        $max_speed_id = null;
-
-        foreach ($ship->properties as $property) {
-            if($property->property_name == 'consumption'){
-                $consumption_id = $property->id;
-            }
-            if($property->property_name == 'crew_number'){
-                $crew_number = $property->id;
-            }
-            if($property->property_name == 'max_speed'){
-                $max_speed = $property->id;
-            }
-        }
-
-        return [ 'boat_id' => $ship->id, 'boat_name' => $ship->boat_name, 'consumption_id' => $consumption_id, 'crew_number_id' => $crew_number, 'max_speed_id' => $max_speed ];
-        
+        return $ship->getPropertiesForShip($ship);        
     }
 
     public function showExpence($id)
@@ -108,12 +86,10 @@ class ShipController extends Controller
      * @param  \App\Ship  $ship
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateShipRequest $request)
+    public function update(UpdateShipRequest $request, Ship $ship)
     {
-        $ship = Ship::findOrFail($request->id);
-        $ship->properties()->detach();
-        $ship->properties()->attach([$request->selected_consumption, $request->selected_max_speed, $request->selected_crew_number]);
-        $ship->update(['boat_name' => $request->boat_name]);
+
+        $ship->updateProperty($ship, $request)->update(['boat_name' => $request->boat_name]);
         return ['msg' => 'Azurirani podaci o brodu'];
     }
 
@@ -132,12 +108,8 @@ class ShipController extends Controller
      * @param  \App\Ship  $ship
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Ship $ship)
     {
-        $ship = Ship::findOrFail($id);
- 
-        $ship->properties()->detach();
-
         $ship->delete();
         return ['msg' => 'Obrisan brod'];
     }
