@@ -21,9 +21,9 @@
                                 <tr  v-for="ship in ships" :key="ship.id">
                                     <td>{{ ship.boat_name }}</td>
                                     
-                                    <td>{{ ship.ship_has_properties[0].property.property_name + ' ' + ship.ship_has_properties[0].property_amount }} l/km</td>
-                                    <td>{{ ship.ship_has_properties[1].property.property_name + ' ' + ship.ship_has_properties[1].property_amount }} l/km</td>
-                                    <td>{{ ship.ship_has_properties[2].property.property_name + ' ' + ship.ship_has_properties[2].property_amount }} l/km</td>
+                                    <td>{{ ship.ship_has_properties[0].property_amount }} l/km</td>
+                                    <td>{{ ship.ship_has_properties[1].property_amount }} </td>
+                                    <td>{{ ship.ship_has_properties[2].property_amount }} čvorova</td>
                                     <td>
                                         <button class="btn btn-sm btn-success" @click="editShipModal(ship.id)">Izmijeni</button>
                                     </td>

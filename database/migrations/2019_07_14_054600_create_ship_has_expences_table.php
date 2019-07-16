@@ -20,6 +20,7 @@ class CreateShipHasExpencesTable extends Migration
             $table->float('expence_amount');
             $table->boolean('active');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('ship_id')->references('id')->on('ships');
             $table->foreign('expence_id')->references('id')->on('expences');

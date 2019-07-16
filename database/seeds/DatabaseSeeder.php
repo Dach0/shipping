@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PropertiesTableSeeder::class);
         $this->call(ExpencesTableSeeder::class);
         $this->call(ShipHasPropertySeeder::class);
+        $this->call(ShipHasExpenceSeeder::class);
     }
 }

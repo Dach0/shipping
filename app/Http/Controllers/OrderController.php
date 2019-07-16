@@ -21,7 +21,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return Order::with('destination','ship')->get();
+        return Order::orderBy('created_at', 'DESC')->with('destination','ship')->get();
     }
 
     /**
@@ -35,50 +35,6 @@ class OrderController extends Controller
         Order::create($request->all());
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Order $order)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Order $order)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Order $order)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Order $order)
-    {
-        //
-    }
 
     public function calculatePrice()
     {
@@ -96,25 +52,25 @@ class OrderController extends Controller
         $food_price = null;
         $destination_distance = $destination->distance;
 
-        foreach ($ship->properties as $property) {
-            if($property->property_name == 'consumption'){
+        foreach ($ship->shipHasProperties as $property) {
+            if($property->property_id == 1){
                 $consumption = $property->property_amount;
             }
-            if($property->property_name == 'crew_number'){
+            if($property->property_id == 2){
                 $crew_number = $property->property_amount;
             }
-            if($property->property_name == 'max_speed'){
+            if($property->property_id == 3){
                 $max_speed = $property->property_amount;
             }
         }
-        foreach ($ship->expences as $expence) {
-            if($expence->expence_name == 'avg_paycheck'){
+        foreach ($ship->shipHasExpences as $expence) {
+            if($expence->expence_id == 1){
                 $avg_paycheck = $expence->expence_amount;
             }
-            if($expence->expence_name == 'fuel_price'){
+            if($expence->expence_id == 2){
                 $fuel_price = $expence->expence_amount;
             }
-            if($expence->expence_name == 'food_price'){
+            if($expence->expence_id == 3){
                 $food_price = $expence->expence_amount;
             }
         }

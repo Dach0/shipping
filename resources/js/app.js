@@ -64,8 +64,8 @@ window.Swal = Swal;
  const routes = [
     { path: '/', name: 'Welcome', component: require('./components/Welcome.vue').default, props: true },
     { path: '/dashboard', name: 'Dashboard', component: require('./components/Dashboard.vue').default, props: true },
-    // { path: '/expences', component: require('./components/Expences.vue').default  },
-    // { path: '/orders', component: require('./components/Order.vue').default  }
+    { path: '/expences', component: require('./components/Expences.vue').default  },
+    { path: '/orders', component: require('./components/Order.vue').default  }
   ]
 
   const router = new VueRouter({

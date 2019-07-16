@@ -26,9 +26,9 @@ class UpdateShipExpencesRequest extends FormRequest
         return [
             'id' => 'required',
             'boat_name' => 'required',
-            'avg_paycheck_id' => 'required',
-            'food_price_id' => 'required',
-            'fuel_price_id' => 'required',
+            'avg_paycheck' => 'required',
+            'food_price' => 'required',
+            'fuel_price' => 'required',
         ];
     }
 }

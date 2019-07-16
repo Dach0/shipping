@@ -29,6 +29,10 @@ class Ship extends Model
             $property->update(array('active' => false));    
             $property->delete();
          }
+         foreach ($ship->shipHasExpences()->get() as $expence) {
+            $expence->update(array('active' => false));    
+            $expence->delete();
+         }
       });
     }
 
@@ -39,7 +43,7 @@ class Ship extends Model
     
     public function addProperty($property)
     {
-        return $this->shipHasProperties()->createMany([
+        $this->shipHasProperties()->createMany([
         [
             'property_id' => 1,
             'property_amount' => $property->consumption,
@@ -57,8 +61,10 @@ class Ship extends Model
         ]
         ]);
     
+        return $this;
     }
 
+    //drugi nacin za popunjavanje editShipProperty fronta, ako ne uzmem direktno podatke nego preko apija
     public function getPropertiesForShip($ship)
     {
         $consumption = null;
@@ -92,12 +98,54 @@ class Ship extends Model
         return $this;
     }
 
-    public function deactivateProperty($ship_id)
+
+    public function addStandardExpences()
     {
-        ShipHasProperty::where('ship_id', $ship_id)->update(array('active' => false));
+        $this->shipHasExpences()->createMany([
+        [
+            'expence_id' => 1,
+            'expence_amount' => 1800,
+            'active' => true,
+        ],
+        [
+            'expence_id' => 2,
+            'expence_amount' => 0.6,
+            'active' => true,
+        ],
+        [
+            'expence_id' => 3,
+            'expence_amount' => 2.5,
+            'active' => true,
+        ]
+        ]);
+    
     }
+    
+    public function updateExpence($ship, $request)
+    {
+        foreach ($ship->shipHasExpences()->get() as $expence) {
+            $expence->update(array( 'active' => false));    
+         }
 
-
+        $this->shipHasExpences()->createMany([
+        [
+            'expence_id' => 1,
+            'expence_amount' => $request->avg_paycheck,
+            'active' => true,
+        ],
+        [
+            'expence_id' => 2,
+            'expence_amount' => $request->fuel_price,
+            'active' => true,
+        ],
+        [
+            'expence_id' => 3,
+            'expence_amount' => $request->food_price,
+            'active' => true,
+        ]
+        ]);
+    
+    }
 
     public function shipHasExpences()
     {

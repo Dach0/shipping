@@ -36,7 +36,9 @@ class ShipController extends Controller
      */
     public function shipsWithExpences()
     {
-       return Ship::with('expences')->get();
+       return Ship::with(['shipHasExpences' => function($query){
+            $query->where('active', true);
+       }])->get();
     }
 
     /**
@@ -47,7 +49,7 @@ class ShipController extends Controller
      */
     public function store(StoreShipRequest $request)
     {
-        Ship::create(['boat_name' => $request->boat_name])->addProperty($request);
+        Ship::create(['boat_name' => $request->boat_name])->addProperty($request)->addStandardExpences();
 
         return ['message' => 'Kreiran brod'];
     }
@@ -61,22 +63,6 @@ class ShipController extends Controller
     public function show(Ship $ship)
     {
         return $ship->getPropertiesForShip($ship);        
-    }
-
-    public function showExpence($id)
-    {
-        return Ship::with('expences')->findOrFail($id);
-        //kod za jedan dbro sa expensijima
-    }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Ship  $ship
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Ship $ship)
-    {
-        //
     }
 
     /**
@@ -93,12 +79,9 @@ class ShipController extends Controller
         return ['msg' => 'Azurirani podaci o brodu'];
     }
 
-    public function updateExpences($id, UpdateShipExpencesRequest $request)
+    public function updateExpences(UpdateShipExpencesRequest $request, Ship $ship)
     {
-        $ship = Ship::findOrFail($id);
-        $ship->expences()->detach();
-        $ship->expences()->attach([$request->avg_paycheck_id, $request->fuel_price_id, $request->food_price_id]);
-        $ship->update(['boat_name' => $request->boat_name]);
+        $ship->updateExpence($ship, $request);
         return ['msg' => 'Azurirani troškovi o brodu'];
     }
 

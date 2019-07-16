@@ -31,7 +31,7 @@ Route::group(['middleware' => ['isAdminOrSales']], function() {
     Route::resource('expence', 'ExpenceController');
     Route::get('ship/expence/{id}', 'ShipController@showExpence');
     Route::get('ship/expences/all', 'ShipController@shipsWithExpences');
-    Route::put('ship/expences/update/{id}', 'ShipController@updateExpences');
+    Route::put('ship/expences/update/{ship}', 'ShipController@updateExpences');
     Route::get('order', 'OrderController@index');
     Route::post('order', 'OrderController@store');
     Route::get('order/price', 'OrderController@calculatePrice');
